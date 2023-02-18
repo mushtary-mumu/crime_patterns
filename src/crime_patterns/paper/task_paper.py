@@ -3,6 +3,7 @@ import shutil
 
 import pytask
 from pytask_latex import compilation_steps as cs
+
 from crime_patterns.config import BLD, PAPER_DIR
 
 documents = ["crime_patterns", "crime_patterns_pres"]
