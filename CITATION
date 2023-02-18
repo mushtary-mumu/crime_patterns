@@ -1,0 +1,6 @@
+@Unpublished{crime_patterns2023,
+    Title  = {A project for analyzing and visualizing spatio-temporal crime incident patterns.},
+    Author = {Mudabbira Mushtary},
+    Year   = {2023},
+    Url    = {https://github.com/mushtary-mumu/crime_patterns}
+}
