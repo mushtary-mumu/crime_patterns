@@ -1,12 +1,9 @@
 """Function(s) for cleaning the data set(s)."""
 
-import os
-from os.path import isfile, isdir, join
 import logging
+from os.path import isfile
 
 import pandas as pd
-import numpy as np
-import itertools
 
 logger = logging.getLogger(__name__)
 
@@ -31,30 +28,26 @@ logger = logging.getLogger(__name__)
 #         pandas.DataFrame: The cleaned data set.
 
 #     """
-#     data = data.drop(columns=data_info["columns_to_drop"])
-#     data = data.dropna()
 #     for cat_col in data_info["categorical_columns"]:
-#         data[cat_col] = data[cat_col].astype("category")
-#     data = data.rename(columns=data_info["column_rename_mapping"])
 
-#     numerical_outcome = pd.Categorical(data[data_info["outcome"]]).codes
-#     data[data_info["outcome_numerical"]] = numerical_outcome
 
-#     return data
+
 
 def load_and_clean_monthly_crime_data(crime_incidence_filepath, year, month, data_info):
-
-    # crime_incidence_path = join(crime_data_dir, f"{year}-{month}", f"{year}-{month}-city-of-london-street.csv")
 
     if isfile(crime_incidence_filepath):
 
         crime_data_monthly = pd.read_csv(crime_incidence_filepath)
 
         ## remove unnecessary columns
-        crime_data_monthly = crime_data_monthly.drop(columns=data_info["columns_to_drop"])
+        crime_data_monthly = crime_data_monthly.drop(
+            columns=data_info["columns_to_drop"],
+        )
 
         ## remove rows columns that don't contain any latitude/longitude information
-        crime_data_monthly = crime_data_monthly.dropna(subset=['Longitude', 'Latitude'], how='all')
+        crime_data_monthly = crime_data_monthly.dropna(
+            subset=["Longitude", "Latitude"], how="all",
+        )
 
         return crime_data_monthly
 

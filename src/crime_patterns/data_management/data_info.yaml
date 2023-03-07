@@ -3,7 +3,7 @@
 crime_data_dir: uk_crime_data_all
 
 columns_to_drop:
-  - Crime ID 
+  - Crime ID
   - Falls within
   - Last outcome category
   - Context
