@@ -1,23 +1,21 @@
 ---
-data_name: data.csv
+# data_name: data.csv
+crime_data_dir: uk_crime_data_all
 
 columns_to_drop:
-  - nationality
-  - ethnicity
-  - region
-  - amt_weekends
-  - amt_weekdays
-  - type
-  - gross_income
+  - Crime ID 
+  - Falls within
+  - Last outcome category
+  - Context
 
-categorical_columns:
-  - gender
-  - marital_status
-  - highest_qualification
-  - smoke
+# categorical_columns:
+#   - gender
+#   - marital_status
+#   - highest_qualification
+#   - smoke
 
-column_rename_mapping:
-  highest_qualification: qualification
+# column_rename_mapping:
+#   highest_qualification: qualification
 
-outcome: smoke
-outcome_numerical: smoke_numerical  # created during the clean_data step
+# outcome: smoke
+# outcome_numerical: smoke_numerical  # created during the clean_data step
