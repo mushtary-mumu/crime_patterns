@@ -11,6 +11,11 @@ PAPER_DIR = SRC.joinpath("..", "..", "paper").resolve()
 
 GROUPS = ["marital_status", "qualification"]
 
-__all__ = ["BLD", "SRC", "TEST_DIR", "GROUPS"]
+# Setting default CRS to OSGB36 / British National Grid
+CRS = "EPSG:27700"
+
+__all__ = ["BLD", "SRC", "TEST_DIR", "GROUPS", "CRS"]
+
+# %%
 
 # %%

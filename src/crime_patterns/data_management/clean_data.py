@@ -33,8 +33,18 @@ logger = logging.getLogger(__name__)
 
 
 
-def load_and_clean_monthly_crime_data(crime_incidence_filepath, year, month, data_info):
+def clean_monthly_crime_data(crime_incidence_filepath, year, month, data_info):
+    """Loads and cleans monthly crime data
 
+    Args:
+        crime_incidence_filepath (_type_): _description_
+        year (_type_): _description_
+        month (_type_): _description_
+        data_info (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     if isfile(crime_incidence_filepath):
 
         crime_data_monthly = pd.read_csv(crime_incidence_filepath)
@@ -52,6 +62,6 @@ def load_and_clean_monthly_crime_data(crime_incidence_filepath, year, month, dat
         return crime_data_monthly
 
     else:
-        logger.warning(f"Filepath doesn't exist: {crime_incidence_path}")
+        logger.warning(f"Filepath doesn't exist: {crime_incidence_filepath}")
         logger.warning(f"Returning empty dataframe for year: {year} and month: {month}")
         return pd.DataFrame()
