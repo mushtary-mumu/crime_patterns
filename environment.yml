@@ -5,10 +5,17 @@ channels:
   - nodefaults
 
 dependencies:
+  - numpy
   - conda-lock
   - ipykernel
   - jupyterlab
   - pandas
+  - geopandas
+  - pysal
+  - scikit-learn
+  - contextily
+#  - rasterio
+  - pointpats
   - pdbpp
   - pip >=21.1
   - plotly>=5.13.0
@@ -20,7 +27,7 @@ dependencies:
   - pytest-cov
   - pytest-xdist
   - python-graphviz
-  - python=3.11
+  - python=3.9
   - pyyaml
   - setuptools_scm
   - statsmodels
