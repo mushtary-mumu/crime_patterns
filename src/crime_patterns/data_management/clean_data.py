@@ -4,6 +4,7 @@ import logging
 from os.path import isfile
 
 import pandas as pd
+import geopandas as gpd
 
 logger = logging.getLogger(__name__)
 
@@ -65,3 +66,12 @@ def clean_monthly_crime_data(crime_incidence_filepath, year, month, data_info):
         logger.warning(f"Filepath doesn't exist: {crime_incidence_filepath}")
         logger.warning(f"Returning empty dataframe for year: {year} and month: {month}")
         return pd.DataFrame()
+
+def convert_points_df_to_gdf(df, longitude_column_name="Longitude", latitude_column_name="Latitude", crs="EPSG:4326"):
+
+    assert longitude_column_name in df.columns, f"{longitude_column_name}, not found in Dataframe columns."
+    assert latitude_column_name in df.columns, f"{latitude_column_name}, not found in Dataframe columns."
+
+    geometry = gpd.points_from_xy(x = df[longitude_column_name], y = df[latitude_column_name], crs=crs)
+
+    return gpd.GeoDataFrame(data=df, geometry=geometry)

@@ -5,7 +5,6 @@ import os
 
 import numpy as np
 import pandas as pd
-import geopandas as gpd
 import pytask
 
 import crime_patterns.config as config
@@ -15,6 +14,7 @@ import crime_patterns.utilities as utils
 src = config.SRC
 bld = config.BLD
 
+## TODO: consider moving some of the things to config.py or data_info.yml
 years = ["%.2d" % i for i in np.arange(2020, 2023, 1)]
 months = ["%.2d" % i for i in np.arange(1, 13, 1)]
 data_info = utils.read_yaml(src / "data_management" / "data_info.yaml")
@@ -58,7 +58,9 @@ def task_clean_data_python(depends_on, produces):
     ]
     crime_data_yearly = pd.concat(crime_data_monthly)
     crime_data_yearly.to_csv(produces["cleaned_csv"], index=False)
-    crime_data_yearly_gdf = utils.convert_points_df_to_gdf(df = crime_data_yearly).to_crs(config.CRS)
+
+    ## TODO: consider renaming columns that have more than 10 characters to avoid truncation
+    crime_data_yearly_gdf = dm.convert_points_df_to_gdf(df = crime_data_yearly).to_crs(config.CRS)
     crime_data_yearly_gdf.to_file(filename=produces["cleaned_shp"])
 
 # %%

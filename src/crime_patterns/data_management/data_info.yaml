@@ -8,6 +8,9 @@ columns_to_drop:
   - Last outcome category
   - Context
 
+urls:
+  uk_crime_data_all: https://policeuk-data.s3.amazonaws.com/download/e3393a9d7a30abcb864d56c7c1b5be141dd357ee.zip
+
 # categorical_columns:
 #   - gender
 #   - marital_status
