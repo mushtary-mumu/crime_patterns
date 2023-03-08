@@ -2,7 +2,7 @@
 #%%
 import itertools
 import os
-
+import shutil
 import numpy as np
 import pandas as pd
 import pytask
@@ -38,17 +38,58 @@ crime_data_filepaths.pop("2022-06", None)
 )
 @pytask.mark.produces(
     {
-        "crime_data_filepaths": crime_data_filepaths
+        "crime_data_filepaths": crime_data_filepaths,
+        "lsoa_shp": src / "data" / "statistical-gis-boundaries-london" / "ESRI" / "LSOA_2011_London_gen_MHW.shp",
+        "msoa_shp": src / "data" / "statistical-gis-boundaries-london" / "ESRI" / "MSOA_2011_London_gen_MHW.shp"
     }
 )
 def task_data_download():
+
     """Clean the data (Python version)."""
 
-    if not os.path.isdir(src / "data" / data_info["crime_data_dir"]):
-        os.makedirs(src / "data" / data_info["crime_data_dir"])
+    downloads_dir = src / "data" / "downloads"
+    unzip_dir = src / "data"
+    if not os.path.isdir(downloads_dir):
+        os.makedirs(downloads_dir)
 
-    utils.download_and_unzip(
-        url = data_info["urls"]["uk_crime_data_all"],
-        extract_to = src / "data" / data_info["crime_data_dir"]
+    utils.download_file(
+                        url = data_info["urls"]["uk_crime_data_all"],
+                        dest_folder = downloads_dir,
+                        filename="uk_crime_data_all.zip"
+                        )
+
+    utils.download_file(
+                        url = data_info["urls"]["IMD_LSOA_shp"],
+                        dest_folder = downloads_dir,
+                        filename="IMD_LSOA_shp.zip"
+                        )
+
+    utils.download_file(
+                        url = data_info["urls"]["IMD_LSOA"],
+                        dest_folder = downloads_dir,
+                        filename="IMD_LSOA.csv"
+                        )
+    
+    utils.download_file(
+                        url = data_info["urls"]["statistical_gis_boundaries_london"],
+                        dest_folder = downloads_dir,
+                        filename="statistical_gis_boundaries_london.zip"
+                        )
+
+    utils.unzip_folder(
+        zipped_folder = downloads_dir / "uk_crime_data_all.zip",
+        extract_to =  unzip_dir / "uk_crime_data_all"
         )
     
+    utils.unzip_folder(
+        zipped_folder = downloads_dir / "IMD_LSOA_shp.zip",
+        extract_to =  unzip_dir / "IMD_LSOA"
+        )
+
+    utils.unzip_folder(
+        zipped_folder = downloads_dir / "statistical_gis_boundaries_london.zip",
+        extract_to =  unzip_dir
+        )
+
+    shutil.move(src= downloads_dir / "IMD_LSOA.csv",
+                dst= src / "data" / "IMD_LSOA")

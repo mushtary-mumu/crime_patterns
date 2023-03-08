@@ -1,7 +1,9 @@
 """Utilities used in various parts of the project."""
 
 import yaml
-from urllib.request import urlopen
+import os
+import requests
+from urllib.request import urlopen, urlretrieve
 from io import BytesIO
 from zipfile import ZipFile
 import pandas as pd
@@ -26,8 +28,23 @@ def read_yaml(path):
             )
             raise ValueError(info) from error
     return out
+
+## TODO: Split function into two: download, extract
+def download_file(url, dest_folder, filename):
+
+    if not os.path.exists(dest_folder):
+        os.makedirs(dest_folder)  # create folder if it does not exist
+
+    # filename = url.split('/')[-1].replace(" ", "_")  # be careful with file names
+    file_path = os.path.join(dest_folder, filename)
+
+    f = urlretrieve(url=url, filename=file_path)
     
-def download_and_unzip(url, extract_to):
-    http_response = urlopen(url)
-    zipfile = ZipFile(BytesIO(http_response.read()))
-    zipfile.extractall(path=extract_to)
+    return file_path
+
+def unzip_folder(zipped_folder, extract_to):
+    
+    zipfile = ZipFile(zipped_folder)
+    zipfile.extractall(extract_to)
+
+    return extract_to
