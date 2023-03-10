@@ -12,6 +12,7 @@ dependencies:
   - pandas
   - geopandas
   - pysal
+  - splot
   - scikit-learn
   - contextily
 #  - rasterio
