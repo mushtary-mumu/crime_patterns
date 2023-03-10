@@ -40,7 +40,8 @@ crime_data_filepaths.pop("2022-06", None)
     {
         "crime_data_filepaths": crime_data_filepaths,
         "lsoa_shp": src / "data" / "statistical-gis-boundaries-london" / "ESRI" / "LSOA_2011_London_gen_MHW.shp",
-        "msoa_shp": src / "data" / "statistical-gis-boundaries-london" / "ESRI" / "MSOA_2011_London_gen_MHW.shp"
+        "msoa_shp": src / "data" / "statistical-gis-boundaries-london" / "ESRI" / "MSOA_2011_London_gen_MHW.shp",
+        "MPS_LSOA_crime": src / "data" / "MPS_LSOA_Level_Crime" / "MPS LSOA Level Crime (Historical).csv"
     }
 )
 def task_data_download():
@@ -76,6 +77,12 @@ def task_data_download():
                         filename="statistical_gis_boundaries_london.zip"
                         )
 
+    utils.download_file(
+                        url = data_info["urls"]["MPS_LSOA_crime"],
+                        dest_folder = downloads_dir,
+                        filename="MPS LSOA Level Crime (Historical).csv"
+                        )
+
     utils.unzip_folder(
         zipped_folder = downloads_dir / "uk_crime_data_all.zip",
         extract_to =  unzip_dir / "uk_crime_data_all"
@@ -91,5 +98,14 @@ def task_data_download():
         extract_to =  unzip_dir
         )
 
+    ## move individual files and organize into folders
     shutil.move(src= downloads_dir / "IMD_LSOA.csv",
-                dst= src / "data" / "IMD_LSOA")
+                dst= src / "data" / "IMD_LSOA" / "IMD_LSOA.csv" )
+
+    shutil.move(src= downloads_dir / "MPS LSOA Level Crime (Historical).csv",
+                dst= src / "data" / "MPS_LSOA_Level_Crime" / "MPS LSOA Level Crime (Historical).csv" )
+
+    ## clear up downloads folder
+    shutil.rmtree(downloads_dir)
+
+# %%

@@ -13,7 +13,8 @@ urls:
   IMD_LSOA_shp: https://www.arcgis.com/sharing/rest/content/items/5e1c399d787e48c0902e5fe4fc1ccfe3/data
   IMD_LSOA: https://opendatacommunities.org/downloads/cube-table?uri=http%3A%2F%2Fopendatacommunities.org%2Fdata%2Fsocietal-wellbeing%2Fimd2019%2Findices
   statistical_gis_boundaries_london: https://data.london.gov.uk/download/statistical-gis-boundary-files-london/9ba8c833-6370-4b11-abdc-314aa020d5e0/statistical-gis-boundaries-london.zip
-
+  MPS_LSOA_crime: https://data.london.gov.uk/download/recorded_crime_summary/9bb3efe6-98fb-47c1-af3e-3be721e8a1cd/MPS%20LSOA%20Level%20Crime%20%28Historical%29.csv
+  
 # categorical_columns:
 #   - gender
 #   - marital_status
