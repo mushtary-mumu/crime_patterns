@@ -32,9 +32,8 @@ logger = logging.getLogger(__name__)
 #     for cat_col in data_info["categorical_columns"]:
 
 
-
-
 def clean_monthly_crime_data(crime_incidence_filepath, year, month, data_info):
+
     """Loads and cleans monthly crime data
 
     Args:
@@ -76,14 +75,11 @@ def convert_points_df_to_gdf(df, longitude_column_name="Longitude", latitude_col
 
     return gpd.GeoDataFrame(data=df, geometry=geometry)
 
-def clean_regional_burglary_data(source, columns_to_keep, ID_column_name, crime_year="2019", crime_major_category="Burglary"):
+def clean_regional_burglary_data(df, columns_to_keep, ID_column_name, crime_year="2019", crime_major_category="Burglary"):
 
-    ## Load and clean burglary data
-    ## load
-    regional_crime = pd.read_csv(source)
-
+    ## Clean burglary data
     ## Select crime category
-    regional_cat_crime = regional_crime.query(f"`Major Category` == '{crime_major_category}'")
+    regional_cat_crime = df.query(f"`Major Category` == '{crime_major_category}'")
 
     ## Select year
     month_columns = regional_cat_crime.filter(regex=crime_year).columns
@@ -96,7 +92,7 @@ def clean_regional_burglary_data(source, columns_to_keep, ID_column_name, crime_
     
     regional_cat_crime[f"{crime_year}_total"] = regional_cat_crime[month_columns].sum(1)
     
-    return regional_cat_crime
+    return regional_cat_crime.reset_index()
 
 def convert_region_df_to_gdf(df, region_gdf, common_column_mapper, crs=None):
         
@@ -112,3 +108,15 @@ def convert_region_df_to_gdf(df, region_gdf, common_column_mapper, crs=None):
     region_gdf = region_gdf.to_crs(crs)
 
     return region_gdf
+
+def aggregate_regional_level_data(lower_level_gdf, upper_level_gdf, ID_column_name):
+
+    # aggregating to ward level
+    agg_gdf = upper_level_gdf.sjoin(lower_level_gdf, how="left")
+    agg_gdf = agg_gdf.groupby(ID_column_name).sum()
+    agg_gdf = agg_gdf.reset_index()
+
+    # adding the geometry column back
+    agg_gdf = upper_level_gdf[[ID_column_name, "geometry"]].merge(agg_gdf, on=ID_column_name, how="outer")
+
+    return agg_gdf

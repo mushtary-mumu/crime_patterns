@@ -44,6 +44,8 @@ crime_data_filepaths.pop("2022-06", None)
         "MPS_LSOA_crime": src / "data" / "MPS_LSOA_Level_Crime" / "MPS LSOA Level Crime (Historical).csv"
     }
 )
+# TODO: Use @pytask.mark.parametrize() here ?? 
+# See: https://pytask-dev.readthedocs.io/en/stable/tutorials/repeating_tasks_with_different_inputs.html
 def task_data_download():
 
     """Clean the data (Python version)."""
