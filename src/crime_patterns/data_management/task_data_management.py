@@ -14,70 +14,91 @@ import crime_patterns.utilities as utils
 
 src = config.SRC
 bld = config.BLD
+data_raw = src / "data"
+data_clean = bld / "python" / "data"
 
 ## TODO: consider moving some of the things to config.py or data_info.yml
-years = ["%.2d" % i for i in np.arange(2020, 2023, 1)]
-months = ["%.2d" % i for i in np.arange(1, 13, 1)]
 data_info = utils.read_yaml(src / "data_management" / "data_info.yaml")
-crime_data_filepaths = {
-    f"{year}-{month}": os.path.join(
-        src / "data" / data_info["crime_data_dir"],
-        f"{year}-{month}",
-        f"{year}-{month}-city-of-london-street.csv",
-    )
-    for year, month in itertools.product(years, months)
+year = data_info["crime_year"]
+
+months = ["%.2d" % i for i in np.arange(1, 13, 1)]
+crime_data_filepaths_london_police = {
+    f"{year}-{month}-london": os.path.join(data_raw / data_info['data_raw_dirs']["uk_crime_data_2019"], f"{year}-{month}", f"{year}-{month}-city-of-london-street.csv")
+    for month in months
 }
 
-# removing keys corresponding to missing data for year/month
-crime_data_filepaths.pop("2020-01", None)
-crime_data_filepaths.pop("2022-06", None)
+crime_data_filepaths_metropoliton_police = {
+    f"{year}-{month}-metropoliton": os.path.join(data_raw / data_info['data_raw_dirs']["uk_crime_data_2019"], f"{year}-{month}", f"{year}-{month}-metropolitan-street.csv")
+        for month in months
+}
+crime_data_filepaths = (
+    crime_data_filepaths_london_police
+    | crime_data_filepaths_metropoliton_police
+)
 
 #%%
 @pytask.mark.depends_on(
     {
         "scripts": ["clean_data.py"],
         "data_info": src / "data_management" / "data_info.yaml",
+        "london_ward_shp": data_raw / data_info['data_raw_dirs']["statistical_gis_boundaries_london"] / data_info['data_raw_dirs']["statistical_gis_boundaries_london"] / "ESRI" / "London_Ward.shp",
         "crime_data_filepaths": crime_data_filepaths,
     },
 )
 @pytask.mark.produces(
     {
-        "cleaned_csv": bld / "python" / "data" / "city-of-london-crimes-2020-2022-cleaned.csv",
-        "cleaned_shp": bld / "python" / "data" / "city-of-london-crimes-2020-2022-cleaned.shp",
+        "greater_london_area": data_clean / "Greater_London_Area.shp",
+        "cleaned_shp": data_clean / "city-of-london-burglaries-2019-cleaned.shp",
+        "cleaned_csv": data_clean / "city-of-london-burglaries-2019-cleaned.csv",
     }
 )
-def task_clean_data_python(depends_on, produces):
+def task_clean_crime_incidences_data(depends_on, produces):
+
     """Clean the data (Python version)."""
     crime_data_monthly = [
         dm.clean_monthly_crime_data(
             crime_incidence_filepath=depends_on["crime_data_filepaths"][key],
             year=key.split("-")[0],
             month=key.split("-")[1],
-            data_info=data_info,
+            crime_type=data_info["crime_type"],
+            columns_to_drop=data_info["uk_crime_data_2019_columns_to_drop"],
         )
         for key in depends_on["crime_data_filepaths"]
     ]
     crime_data_yearly = pd.concat(crime_data_monthly)
-    crime_data_yearly.to_csv(produces["cleaned_csv"], index=False)
+
+    ## Drop duplicate points
+    crime_data_yearly = crime_data_yearly.drop_duplicates(subset=['Longitude', 'Latitude'], keep='first')
+
+    # crime_data_yearly.to_csv(produces["cleaned_csv"], index=False)
 
     ## TODO: consider renaming columns that have more than 10 characters to avoid truncation
     crime_data_yearly_gdf = dm.convert_points_df_to_gdf(df = crime_data_yearly).to_crs(config.CRS)
+    
+    london_wards = gpd.read_file(depends_on["london_ward_shp"])
+    london_wards["dissolve_key"] = "dissolve"
+    london_ward_dissolved = london_wards.dissolve(by="dissolve_key")
+    london_ward_dissolved.loc[:, "NAME"]  = "Greater London Area"
+    london_ward_dissolved.to_file(filename=produces["greater_london_area"])
+    
+    crime_data_yearly_gdf = gpd.sjoin(crime_data_yearly_gdf, london_ward_dissolved, how='inner')
     crime_data_yearly_gdf.to_file(filename=produces["cleaned_shp"])
+    crime_data_yearly_gdf.to_csv(produces["cleaned_csv"], index=False)
 
 # %%
 @pytask.mark.depends_on(
     {
         "scripts": ["clean_data.py"],
         "data_info": src / "data_management" / "data_info.yaml",
-        "london_lsoa_shp": src / "data" / "statistical-gis-boundaries-london" / "ESRI" / "LSOA_2011_London_gen_MHW.shp",
-        "london_ward_shp": src / "data" / "statistical-gis-boundaries-london" / "ESRI" / "London_Ward.shp",
-        "lsoa_crime_data": src / "data" / "MPS_LSOA_Level_Crime" / "MPS LSOA Level Crime (Historical).csv"
+        "london_lsoa_shp": data_raw / data_info['data_raw_dirs']["statistical_gis_boundaries_london"] / "LSOA_2011_London_gen_MHW.shp",
+        "london_ward_shp": data_raw / data_info['data_raw_dirs']["statistical_gis_boundaries_london"] / "London_Ward.shp",
+        "lsoa_crime_data": data_raw / data_info['data_raw_dirs']["lsoa_level_crime"] / "MPS LSOA Level Crime (Historical).csv"
     },
 )
 @pytask.mark.produces(
     {
-        "lsoa_crime_data_cleaned": bld / "python" / "data" / "MPS_LSOA_Level_burglary_2019.shp",
-        "ward_crime_data_cleaned": bld / "python" / "data" / "MPS_Ward_Level_burglary_2019.shp",
+        "lsoa_crime_data_cleaned": data_clean / "MPS_LSOA_Level_burglary_2019.shp",
+        "ward_crime_data_cleaned": data_clean / "MPS_Ward_Level_burglary_2019.shp",
     }
 )
 def task_prepare_ward_level_crime_data(depends_on, produces):

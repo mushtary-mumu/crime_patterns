@@ -29,7 +29,6 @@ def read_yaml(path):
             raise ValueError(info) from error
     return out
 
-## TODO: Split function into two: download, extract
 def download_file(url, dest_folder, filename):
 
     if not os.path.exists(dest_folder):
@@ -42,9 +41,22 @@ def download_file(url, dest_folder, filename):
     
     return file_path
 
-def unzip_folder(zipped_folder, extract_to):
+def unzip_folder(zip_file, output_dir, subset=False, startswith=None):
     
-    zipfile = ZipFile(zipped_folder)
-    zipfile.extractall(extract_to)
+    unzipped_folder = os.path.basename(zip_file).strip(".zip")
+    output_dir = os.path.join(output_dir, unzipped_folder)
 
-    return extract_to
+    if not os.path.isdir(output_dir):
+        os.makedirs(output_dir)
+
+    with ZipFile(zip_file) as zip_archive:
+        
+        if subset:
+            for file in zip_archive.namelist():
+                if file.startswith(startswith):
+                    zip_archive.extract(file, output_dir)
+        else:
+            
+            zip_archive.extractall(output_dir)
+
+    return output_dir

@@ -10,27 +10,41 @@ import pytask
 import crime_patterns.config as config
 import crime_patterns.data_management as dm
 import crime_patterns.utilities as utils 
+import logging
+logger = logging.getLogger(__name__)
 
 src = config.SRC
 bld = config.BLD
+data_raw = src / "data"
+data_clean = bld / "python" / "data"
+downloads_dir = src / "data" / "downloads"
 
-years = ["%.2d" % i for i in np.arange(2020, 2023, 1)]
-months = ["%.2d" % i for i in np.arange(1, 13, 1)]
+if not os.path.isdir(downloads_dir):
+    os.makedirs(downloads_dir)
+
 data_info = utils.read_yaml(src / "data_management" / "data_info.yaml")
-crime_data_filepaths = {
-    f"{year}-{month}": os.path.join(
-        src / "data" / data_info["crime_data_dir"],
-        f"{year}-{month}",
-        f"{year}-{month}-city-of-london-street.csv",
-    )
-    for year, month in itertools.product(years, months)
+year = data_info["crime_year"]
+
+months = ["%.2d" % i for i in np.arange(1, 13, 1)]
+crime_data_filepaths_london_police = {
+    f"{year}-{month}-london": os.path.join(data_raw / data_info['data_raw_dirs']["uk_crime_data_2019"], f"{year}-{month}", f"{year}-{month}-city-of-london-street.csv")
+    for month in months
 }
 
-# removing keys corresponding to missing data for year/month
-crime_data_filepaths.pop("2020-01", None)
-crime_data_filepaths.pop("2022-06", None)
+crime_data_filepaths_metropoliton_police = {
+    f"{year}-{month}-metropoliton": os.path.join(data_raw / data_info['data_raw_dirs']["uk_crime_data_2019"], f"{year}-{month}", f"{year}-{month}-metropolitan-street.csv")
+        for month in months
+}
+crime_data_filepaths = (
+    crime_data_filepaths_london_police
+    | crime_data_filepaths_metropoliton_police
+)
 
 #%%
+
+###### Downloading raw data ######
+
+@pytask.mark.persist
 @pytask.mark.depends_on(
     {
         "data_info": src / "data_management" / "data_info.yaml"
@@ -38,76 +52,99 @@ crime_data_filepaths.pop("2022-06", None)
 )
 @pytask.mark.produces(
     {
-        "crime_data_filepaths": crime_data_filepaths,
-        "lsoa_shp": src / "data" / "statistical-gis-boundaries-london" / "ESRI" / "LSOA_2011_London_gen_MHW.shp",
-        "msoa_shp": src / "data" / "statistical-gis-boundaries-london" / "ESRI" / "MSOA_2011_London_gen_MHW.shp",
-        "MPS_LSOA_crime": src / "data" / "MPS_LSOA_Level_Crime" / "MPS LSOA Level Crime (Historical).csv"
+        "uk_crime_data_2019": downloads_dir / "uk_crime_data_2019.zip",
+        "imd_lsoa": downloads_dir / "IMD_LSOA_2019.csv",
+        "imd_lsoa_shp": downloads_dir / "IMD_LSOA_2019.zip",
+        "statistical_gis_boundaries_london": downloads_dir / "statistical-gis-boundaries-london.zip",
+        "lsoa_level_crime": downloads_dir / "MPS LSOA Level Crime (Historical).csv",
     }
 )
-# TODO: Use @pytask.mark.parametrize() here ?? 
-# See: https://pytask-dev.readthedocs.io/en/stable/tutorials/repeating_tasks_with_different_inputs.html
-def task_data_download():
+def task_data_download(produces):
 
     """Clean the data (Python version)."""
 
-    downloads_dir = src / "data" / "downloads"
-    unzip_dir = src / "data"
-    if not os.path.isdir(downloads_dir):
-        os.makedirs(downloads_dir)
+    logger.warn("This task downloads large data files with approx ~ 1.7 GB filesize.")
 
-    utils.download_file(
-                        url = data_info["urls"]["uk_crime_data_all"],
-                        dest_folder = downloads_dir,
-                        filename="uk_crime_data_all.zip"
-                        )
+    for url_key in data_info["urls"]:
+        utils.download_file(
+                            url = data_info["urls"][url_key],
+                            dest_folder = downloads_dir,
+                            filename = produces[url_key]
+                            )
 
-    utils.download_file(
-                        url = data_info["urls"]["IMD_LSOA_shp"],
-                        dest_folder = downloads_dir,
-                        filename="IMD_LSOA_shp.zip"
-                        )
+###### Unzipping downloaded data ######
 
-    utils.download_file(
-                        url = data_info["urls"]["IMD_LSOA"],
-                        dest_folder = downloads_dir,
-                        filename="IMD_LSOA.csv"
-                        )
+@pytask.mark.depends_on(
+
+    {
+        "uk_crime_data_2019": downloads_dir / "uk_crime_data_2019.zip",
+        "imd_lsoa_shp": downloads_dir / "IMD_LSOA_2019.zip",
+        "statistical_gis_boundaries_london": downloads_dir / "statistical-gis-boundaries-london.zip",
+    }
+)
+## TODO: Resolve folder-in-folder issue when unzipping folders
+@pytask.mark.produces(
+    {
+        "uk_crime_data_2019": crime_data_filepaths,
+        "imd_lsoa_shp": data_raw / data_info['data_raw_dirs']["imd_lsoa"] / "IMD_2019.shp",
+        "statistical_gis_boundaries_london": [data_raw / data_info['data_raw_dirs']["statistical_gis_boundaries_london"] / data_info['data_raw_dirs']["statistical_gis_boundaries_london"] / "ESRI" / "LSOA_2011_London_gen_MHW.shp",
+                                              data_raw / data_info['data_raw_dirs']["statistical_gis_boundaries_london"] / data_info['data_raw_dirs']["statistical_gis_boundaries_london"] / "ESRI" / "MSOA_2011_London_gen_MHW.shp",
+                                              data_raw / data_info['data_raw_dirs']["statistical_gis_boundaries_london"] / data_info['data_raw_dirs']["statistical_gis_boundaries_london"] / "ESRI" / "London_Ward.shp"]
+    }
+)
+
+def task_data_unzip(depends_on, produces):
+
+    logger.warn("This task unzips large data files with approx ~ 2.5 GB filesize.")
+
+    for key in depends_on:
+
+        if key == "uk_crime_data_2019":
+            # Selective extraction is performed 
+            # to avoid extraction of crime data 
+            # from other years (2017 and 2018)
+            # that is also available in the downloaded archive.
+            subset = True
+            startswith = data_info["crime_year"]
+
+        else: 
+            subset = False
+            startswith=None
+        
+        utils.unzip_folder(
+            zip_file = depends_on[key],
+            output_dir = data_raw,
+            subset=subset, 
+            startswith=startswith
+            )
+
+###### Moving and reorganizing data files in folders #######
+
+@pytask.mark.depends_on(
+
+    {
+        "imd_lsoa": downloads_dir / "IMD_LSOA_2019.csv",
+        "lsoa_level_crime": downloads_dir / "MPS LSOA Level Crime (Historical).csv",
+    }
+)
+@pytask.mark.produces(
+    {
+        "imd_lsoa": data_raw / data_info['data_raw_dirs']["imd_lsoa"] / "IMD_LSOA_2019.csv",
+        "lsoa_level_crime": data_raw / data_info['data_raw_dirs']["lsoa_level_crime"] / "MPS LSOA Level Crime (Historical).csv",
+    }
+)
+
+def task_data_move(depends_on, produces):
     
-    utils.download_file(
-                        url = data_info["urls"]["statistical_gis_boundaries_london"],
-                        dest_folder = downloads_dir,
-                        filename="statistical_gis_boundaries_london.zip"
-                        )
-
-    utils.download_file(
-                        url = data_info["urls"]["MPS_LSOA_crime"],
-                        dest_folder = downloads_dir,
-                        filename="MPS LSOA Level Crime (Historical).csv"
-                        )
-
-    utils.unzip_folder(
-        zipped_folder = downloads_dir / "uk_crime_data_all.zip",
-        extract_to =  unzip_dir / "uk_crime_data_all"
-        )
-    
-    utils.unzip_folder(
-        zipped_folder = downloads_dir / "IMD_LSOA_shp.zip",
-        extract_to =  unzip_dir / "IMD_LSOA"
-        )
-
-    utils.unzip_folder(
-        zipped_folder = downloads_dir / "statistical_gis_boundaries_london.zip",
-        extract_to =  unzip_dir
-        )
-
     ## move individual files and organize into folders
-    shutil.move(src= downloads_dir / "IMD_LSOA.csv",
-                dst= src / "data" / "IMD_LSOA" / "IMD_LSOA.csv" )
+    shutil.copy2(src= depends_on["imd_lsoa"],
+                dst= os.path.dirname(produces["imd_lsoa"]) )
 
-    shutil.move(src= downloads_dir / "MPS LSOA Level Crime (Historical).csv",
-                dst= src / "data" / "MPS_LSOA_Level_Crime" / "MPS LSOA Level Crime (Historical).csv" )
+    shutil.copy2(src= depends_on["lsoa_level_crime"],
+                dst= os.path.dirname(produces["lsoa_level_crime"]))
 
     ## clear up downloads folder
-    shutil.rmtree(downloads_dir)
+    # shutil.rmtree(downloads_dir)
+
 
 # %%

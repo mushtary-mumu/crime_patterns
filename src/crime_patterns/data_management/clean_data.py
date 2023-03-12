@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 #     for cat_col in data_info["categorical_columns"]:
 
 
-def clean_monthly_crime_data(crime_incidence_filepath, year, month, data_info):
+def clean_monthly_crime_data(crime_incidence_filepath, crime_type, year, month, columns_to_drop):
 
     """Loads and cleans monthly crime data
 
@@ -46,25 +46,35 @@ def clean_monthly_crime_data(crime_incidence_filepath, year, month, data_info):
         _type_: _description_
     """
     if isfile(crime_incidence_filepath):
-
-        crime_data_monthly = pd.read_csv(crime_incidence_filepath)
-
-        ## remove unnecessary columns
-        crime_data_monthly = crime_data_monthly.drop(
-            columns=data_info["columns_to_drop"],
+        return _clean_monthly_crime_data(
+            crime_incidence_filepath, columns_to_drop, crime_type
         )
+    
+    logger.warning(f"Filepath doesn't exist: {crime_incidence_filepath}")
+    logger.warning(f"Returning empty dataframe for year: {year} and month: {month}")
 
-        ## remove rows columns that don't contain any latitude/longitude information
-        crime_data_monthly = crime_data_monthly.dropna(
-            subset=["Longitude", "Latitude"], how="all",
-        )
+    return pd.DataFrame()
 
-        return crime_data_monthly
+def _clean_monthly_crime_data(crime_incidence_filepath, columns_to_drop, crime_type):
 
-    else:
-        logger.warning(f"Filepath doesn't exist: {crime_incidence_filepath}")
-        logger.warning(f"Returning empty dataframe for year: {year} and month: {month}")
-        return pd.DataFrame()
+    crime_data_monthly = pd.read_csv(crime_incidence_filepath)
+
+    ## remove unnecessary columns
+    crime_data_monthly = crime_data_monthly.drop(
+        columns=columns_to_drop,
+    )
+
+    ## remove rows columns that don't contain any latitude/longitude information
+    crime_data_monthly = crime_data_monthly.dropna(
+        subset=["Longitude", "Latitude"], how="all",
+    )
+
+    london_city_extent_mask = ((crime_data_monthly["Longitude"] > -0.53) & (crime_data_monthly["Longitude"] < 0.35) & (crime_data_monthly["Latitude"] > 51.275) & (crime_data_monthly["Latitude"] < 51.7))
+
+    crime_data_monthly = crime_data_monthly.loc[london_city_extent_mask]
+    crime_data_monthly = crime_data_monthly.query(f"`Crime type` == '{crime_type}'")
+
+    return crime_data_monthly
 
 def convert_points_df_to_gdf(df, longitude_column_name="Longitude", latitude_column_name="Latitude", crs="EPSG:4326"):
 
