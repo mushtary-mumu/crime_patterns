@@ -15,7 +15,7 @@ dependencies:
   - splot
   - scikit-learn
   - contextily
-#  - rasterio
+  - rasterio
   - pointpats
   - pdbpp
   - pip >=21.1

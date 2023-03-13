@@ -7,6 +7,7 @@ from urllib.request import urlopen, urlretrieve
 from io import BytesIO
 from zipfile import ZipFile
 import pandas as pd
+import pickle
 
 def read_yaml(path):
     """Read a YAML file.
@@ -60,3 +61,17 @@ def unzip_folder(zip_file, output_dir, subset=False, startswith=None):
             zip_archive.extractall(output_dir)
 
     return output_dir
+
+def save_array_to_pickle(array, output):
+    
+    with open(output,'wb') as f:
+        pickle.dump(array, f)
+
+    return output
+
+def load_array_from_pickle(source):
+    
+    with open(source,'rb') as f:
+        array = pickle.load(f)
+    
+    return array
