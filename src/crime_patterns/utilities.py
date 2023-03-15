@@ -62,16 +62,16 @@ def unzip_folder(zip_file, output_dir, subset=False, startswith=None):
 
     return output_dir
 
-def save_array_to_pickle(array, output):
+def save_object_to_pickle(obj, output):
     
     with open(output,'wb') as f:
-        pickle.dump(array, f)
+        pickle.dump(obj, f)
 
     return output
 
-def load_array_from_pickle(source):
+def load_object_from_pickle(source):
     
     with open(source,'rb') as f:
-        array = pickle.load(f)
+        obj = pickle.load(f)
     
-    return array
+    return obj
