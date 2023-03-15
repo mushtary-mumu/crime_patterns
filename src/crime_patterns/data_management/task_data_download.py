@@ -19,6 +19,9 @@ data_raw = src / "data"
 data_clean = bld / "python" / "data"
 downloads_dir = src / "data" / "downloads"
 
+if not os.path.isdir(data_raw):
+    os.makedirs(data_raw)
+
 if not os.path.isdir(downloads_dir):
     os.makedirs(downloads_dir)
 
