@@ -3,9 +3,12 @@ name: crime_patterns
 channels:
   - conda-forge
   - nodefaults
+  - anaconda
 
 dependencies:
   - numpy
+  - xarray
+  - netcdf4
   - conda-lock
   - ipykernel
   - jupyterlab
@@ -15,7 +18,7 @@ dependencies:
   - splot
   - scikit-learn
   - contextily
-#  - rasterio
+  - rasterio
   - pointpats
   - pdbpp
   - pip >=21.1
