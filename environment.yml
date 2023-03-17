@@ -31,11 +31,12 @@ dependencies:
   - pytest-cov
   - pytest-xdist
   - python-graphviz
-  - python=3.9
+  - python=3.11
   - pyyaml
   - setuptools_scm
   - statsmodels
   - toml
+  - tox-conda
   - pip:
       - -e .
       - kaleido

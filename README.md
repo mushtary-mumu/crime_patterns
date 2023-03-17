@@ -7,7 +7,7 @@
 
 ## Project Title 
 > ## **Burglary Crime Patterns and its Driving Factors in the City of London**
-> #### *EPP for Economists Final Project, University of Bonn WS 22/23*
+> #### *Effective Programming Practices for Economists Final Project, University of Bonn WS 22/23*
 ><img src="burglary_hotspots.png" width="500" height="400">
 
 > #### Author
