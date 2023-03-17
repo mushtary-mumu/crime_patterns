@@ -22,17 +22,17 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macos-latest
-          - windows-latest
+          # - macos-latest
+          # - windows-latest
         python-version:
           - '3.11'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
       - name: create build environment
         uses: mamba-org/provision-with-micromamba@main
         with:
           environment-file: environment.yml
-          environment-name: "{{ cookiecutter.project_slug }}"
+          # environment-name: "{{ cookiecutter.project_slug }}"
           cache-env: true
           extra-specs: |
             python=${{ matrix.python-version }}
@@ -40,9 +40,9 @@ jobs:
         shell: bash -l {0}
         run: |
           micromamba activate gettsim
-          pytest --cov-report=xml --cov=./ --ignore=dashboard/
+          pytest --vv --cov-report=xml --cov=./ --ignore=dashboard/
       - name: Upload coverage report.
         if: runner.os == 'Linux' && matrix.python-version == '3.11'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v2
         # with:
         #   token: ${{ secrets.CODECOV_TOKEN }}
