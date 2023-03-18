@@ -1,9 +1,13 @@
 # Crime Data Mapping and Spatial Regression
 
-[![image](https://img.shields.io/github/actions/workflow/status/mushtary-mumu/crime_patterns/main.yml?branch=main)](https://github.com/mushtary-mumu/crime_patterns/actions?query=branch%3Amain) [![image](https://codecov.io/gh/mushtary-mumu/crime_patterns/branch/main/graph/badge.svg)](https://codecov.io/gh/mushtary-mumu/crime_patterns)
+[![Tests](https://github.com/mushtary-mumu/crime_patterns/actions/workflows/main.yml/badge.svg)](https://github.com/mushtary-mumu/crime_patterns/actions/workflows/main.yml)
 
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/mushtary-mumu/crime_patterns/main.svg)](https://results.pre-commit.ci/latest/github/mushtary-mumu/crime_patterns/main)
-[![image](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+<!-- [![image](https://img.shields.io/github/actions/workflow/status/mushtary-mumu/crime_patterns/main.yml)](https://github.com/mushtary-mumu/crime_patterns/actions?query=branch%3Amain)  -->
+
+<!-- [![image](https://codecov.io/gh/mushtary-mumu/crime_patterns/branch/main/graph/badge.svg)](https://codecov.io/gh/mushtary-mumu/crime_patterns) -->
+
+<!-- [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/mushtary-mumu/crime_patterns/main.svg)](https://results.pre-commit.ci/latest/github/mushtary-mumu/crime_patterns/main)
+[![image](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) -->
 
 ## Project Title 
 > ## **Burglary Crime Patterns and its Driving Factors in the City of London**
