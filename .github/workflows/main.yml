@@ -1,8 +1,12 @@
 name: Setup-Miniconda
-on: 
-  push
-    branches:    
-      - 'github_actions' 
+
+on:
+  push:
+    branches:
+    - 'github_actions'
+  pull_request:
+    branches:
+    - '*'
 
 jobs:
   miniconda:
