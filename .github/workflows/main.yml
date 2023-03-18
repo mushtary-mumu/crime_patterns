@@ -32,7 +32,7 @@ jobs:
         uses: mamba-org/provision-with-micromamba@main
         with:
           environment-file: environment.yml
-          environment-name: "{{ cookiecutter.project_slug }}"
+          environment-name: test
           cache-env: true
           extra-specs: |
             python=${{ matrix.python-version }}
