@@ -1,27 +1,19 @@
 ---
 # data_name: data.csv
-crime_year: "2019"
-crime_type: Burglary
+crime_data_dir: uk_crime_data_all
 
-urls:
-  uk_crime_data_2019: https://data.police.uk/data/archive/2019-12.zip
-  imd_lsoa: https://opendatacommunities.org/downloads/cube-table?uri=http%3A%2F%2Fopendatacommunities.org%2Fdata%2Fsocietal-wellbeing%2Fimd2019%2Findices
-  imd_lsoa_shp: https://www.arcgis.com/sharing/rest/content/items/5e1c399d787e48c0902e5fe4fc1ccfe3/data
-  statistical_gis_boundaries_london: https://data.london.gov.uk/download/statistical-gis-boundary-files-london/9ba8c833-6370-4b11-abdc-314aa020d5e0/statistical-gis-boundaries-london.zip
-  lsoa_level_crime: https://data.london.gov.uk/download/recorded_crime_summary/9bb3efe6-98fb-47c1-af3e-3be721e8a1cd/MPS%20LSOA%20Level%20Crime%20%28Historical%29.csv
-
-data_raw_dirs:
-  uk_crime_data_2019: uk_crime_data_2019
-  statistical_gis_boundaries_london: statistical-gis-boundaries-london
-  lsoa_level_crime: MPS_LSOA_Level_Crime
-  imd_lsoa: IMD_LSOA_2019
-  imd_lsoa_shp: IMD_LSOA_2019
-
-uk_crime_data_2019_columns_to_drop:
+columns_to_drop:
   - Crime ID
   - Falls within
   - Last outcome category
   - Context
+
+urls:
+  uk_crime_data_all: https://policeuk-data.s3.amazonaws.com/download/e3393a9d7a30abcb864d56c7c1b5be141dd357ee.zip
+  IMD_LSOA_shp: https://www.arcgis.com/sharing/rest/content/items/5e1c399d787e48c0902e5fe4fc1ccfe3/data
+  IMD_LSOA: https://opendatacommunities.org/downloads/cube-table?uri=http%3A%2F%2Fopendatacommunities.org%2Fdata%2Fsocietal-wellbeing%2Fimd2019%2Findices
+  statistical_gis_boundaries_london: https://data.london.gov.uk/download/statistical-gis-boundary-files-london/9ba8c833-6370-4b11-abdc-314aa020d5e0/statistical-gis-boundaries-london.zip
+  MPS_LSOA_crime: https://data.london.gov.uk/download/recorded_crime_summary/9bb3efe6-98fb-47c1-af3e-3be721e8a1cd/MPS%20LSOA%20Level%20Crime%20%28Historical%29.csv
   
 # categorical_columns:
 #   - gender
