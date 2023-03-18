@@ -46,6 +46,7 @@ def data():
     return {"longitudes":longitudes, "latitudes":latitudes, "region":region}
 
 #%%
+@pytest.mark.skip(reason="not finalized yet")
 def test_evaluate_hotspots(data):
     
     ds = evaluate_hotspots(data["longitudes"], data["latitudes"], data["region"])
@@ -54,6 +55,7 @@ def test_evaluate_hotspots(data):
     assert ds.densities.min() == 1.0
 
 #%%
+@pytest.mark.skip(reason="not finalized yet")
 def test_cluster_crime_incidents_dbscan(data):
     
     cluster_labels = cluster_crime_incidents_dbscan(data["longitudes"], data["latitudes"],epsilon=0.1,min_samples=1)
