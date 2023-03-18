@@ -9,12 +9,14 @@ on:
   push:
     branches:
     - main
-    - github_actions
+    - develop
+
   pull_request:
     branches:
     - '*'
 jobs:
   run-tests:
+    if: "!contains(github.event.commits[0].message, '[skip ci]')"
     name: Run tests for ${{ matrix.os }} on ${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
     strategy:
