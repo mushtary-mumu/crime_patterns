@@ -31,7 +31,6 @@ dependencies:
   - pytest-cov
   - pytest-xdist
   - python-graphviz
-  - python=3.9
   - pyyaml
   - setuptools_scm
   - statsmodels
