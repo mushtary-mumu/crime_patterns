@@ -9,7 +9,7 @@ on:
     - '*'
 
 jobs:
-  miniconda:
+  run-tests:
     name: Miniconda ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -27,8 +27,8 @@ jobs:
         run: |
           conda info
           conda list
-    - name: Run pytest
+      - name: Run pytest
         shell: bash -l {0}
         run: |
-            # conda install pytest
-            pytest -vv
+          conda install pytest
+          pytest -vv
