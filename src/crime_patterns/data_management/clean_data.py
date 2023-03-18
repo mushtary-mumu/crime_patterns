@@ -32,9 +32,8 @@ logger = logging.getLogger(__name__)
 #     for cat_col in data_info["categorical_columns"]:
 
 
+def clean_monthly_crime_data(crime_incidence_filepath, crime_type, year, month, columns_to_drop):
 
-
-def clean_monthly_crime_data(crime_incidence_filepath, year, month, data_info):
     """Loads and cleans monthly crime data
 
     Args:
@@ -47,25 +46,35 @@ def clean_monthly_crime_data(crime_incidence_filepath, year, month, data_info):
         _type_: _description_
     """
     if isfile(crime_incidence_filepath):
-
-        crime_data_monthly = pd.read_csv(crime_incidence_filepath)
-
-        ## remove unnecessary columns
-        crime_data_monthly = crime_data_monthly.drop(
-            columns=data_info["columns_to_drop"],
+        return _clean_monthly_crime_data(
+            crime_incidence_filepath, columns_to_drop, crime_type
         )
+    
+    logger.warning(f"Filepath doesn't exist: {crime_incidence_filepath}")
+    logger.warning(f"Returning empty dataframe for year: {year} and month: {month}")
 
-        ## remove rows columns that don't contain any latitude/longitude information
-        crime_data_monthly = crime_data_monthly.dropna(
-            subset=["Longitude", "Latitude"], how="all",
-        )
+    return pd.DataFrame()
 
-        return crime_data_monthly
+def _clean_monthly_crime_data(crime_incidence_filepath, columns_to_drop, crime_type):
 
-    else:
-        logger.warning(f"Filepath doesn't exist: {crime_incidence_filepath}")
-        logger.warning(f"Returning empty dataframe for year: {year} and month: {month}")
-        return pd.DataFrame()
+    crime_data_monthly = pd.read_csv(crime_incidence_filepath)
+
+    ## remove unnecessary columns
+    crime_data_monthly = crime_data_monthly.drop(
+        columns=columns_to_drop,
+    )
+
+    ## remove rows columns that don't contain any latitude/longitude information
+    crime_data_monthly = crime_data_monthly.dropna(
+        subset=["Longitude", "Latitude"], how="all",
+    )
+
+    london_city_extent_mask = ((crime_data_monthly["Longitude"] > -0.53) & (crime_data_monthly["Longitude"] < 0.35) & (crime_data_monthly["Latitude"] > 51.275) & (crime_data_monthly["Latitude"] < 51.7))
+
+    crime_data_monthly = crime_data_monthly.loc[london_city_extent_mask]
+    crime_data_monthly = crime_data_monthly.query(f"`Crime type` == '{crime_type}'")
+
+    return crime_data_monthly
 
 def convert_points_df_to_gdf(df, longitude_column_name="Longitude", latitude_column_name="Latitude", crs="EPSG:4326"):
 
@@ -75,3 +84,49 @@ def convert_points_df_to_gdf(df, longitude_column_name="Longitude", latitude_col
     geometry = gpd.points_from_xy(x = df[longitude_column_name], y = df[latitude_column_name], crs=crs)
 
     return gpd.GeoDataFrame(data=df, geometry=geometry)
+
+def clean_regional_burglary_data(df, columns_to_keep, ID_column_name, crime_year="2019", crime_major_category="Burglary"):
+
+    ## Clean burglary data
+    ## Select crime category
+    regional_cat_crime = df.query(f"`Major Category` == '{crime_major_category}'")
+
+    ## Select year
+    month_columns = regional_cat_crime.filter(regex=crime_year).columns
+    columns_to_keep = columns_to_keep + list(month_columns)
+    regional_cat_crime = regional_cat_crime[columns_to_keep]
+
+    regional_cat_crime = regional_cat_crime.groupby(by=ID_column_name).sum()
+
+    ## Sum crime for whole year
+    
+    regional_cat_crime[f"{crime_year}_total"] = regional_cat_crime[month_columns].sum(1)
+    
+    return regional_cat_crime.reset_index()
+
+def convert_region_df_to_gdf(df, region_gdf, common_column_mapper, crs=None):
+        
+    if crs is None: crs = region_gdf.crs
+
+    # create gdf
+    # rename gdf column to df column name
+    region_gdf = region_gdf.rename(columns={common_column_mapper["gdf"]: common_column_mapper["df"]})
+
+    region_gdf = region_gdf.merge(df, on=common_column_mapper["df"], how="outer") 
+    region_gdf = region_gdf.fillna(0)
+
+    region_gdf = region_gdf.to_crs(crs)
+
+    return region_gdf
+
+def aggregate_regional_level_data(lower_level_gdf, upper_level_gdf, ID_column_name):
+
+    # aggregating to ward level
+    agg_gdf = upper_level_gdf.sjoin(lower_level_gdf, how="left")
+    agg_gdf = agg_gdf.groupby(ID_column_name).sum()
+    agg_gdf = agg_gdf.reset_index()
+
+    # adding the geometry column back
+    agg_gdf = upper_level_gdf[[ID_column_name, "geometry"]].merge(agg_gdf, on=ID_column_name, how="outer")
+
+    return agg_gdf
