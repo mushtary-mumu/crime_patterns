@@ -1,5 +1,8 @@
 name: Setup-Miniconda
-on: [push]
+on: 
+  push
+    branches:    
+          - '*' 
 
 jobs:
   miniconda:
