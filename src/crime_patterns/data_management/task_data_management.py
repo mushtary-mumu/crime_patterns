@@ -181,6 +181,7 @@ def task_prepare_ward_level_IMD_data(depends_on, produces):
                                                             upper_level_gdf = london_wards,
                                                             ID_column_name = "GSS_CODE",
                                                             crs = config.CRS,
+                                                            weights_dict = {"values_col": score_col_names, "weights_col": "TotPop"}
                                                             )
 
     # Save to disk

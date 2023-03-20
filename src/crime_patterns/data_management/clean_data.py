@@ -4,6 +4,7 @@ import logging
 from os.path import isfile
 
 import pandas as pd
+import numpy as np
 import geopandas as gpd
 
 logger = logging.getLogger(__name__)
@@ -119,15 +120,26 @@ def convert_region_df_to_gdf(df, region_gdf, common_column_mapper, crs=None):
 
     return region_gdf
 
-def aggregate_regional_level_data(lower_level_gdf, upper_level_gdf, ID_column_name, crs):
+def aggregate_regional_level_data(lower_level_gdf, upper_level_gdf, ID_column_name, crs, weights_dict=None):
 
     if lower_level_gdf.crs != upper_level_gdf.crs:
         lower_level_gdf = lower_level_gdf.to_crs(crs)
         upper_level_gdf = upper_level_gdf.to_crs(crs)
 
     # aggregating to ward level
-    agg_gdf = upper_level_gdf.sjoin(lower_level_gdf, how="left")
-    agg_gdf = agg_gdf.groupby(ID_column_name).sum()
+    joined_gdf = upper_level_gdf.sjoin(lower_level_gdf, how="left")
+    agg_gdf_groups = joined_gdf.groupby(ID_column_name)
+
+    if weights_dict is not None:
+        assert type(weights_dict) == dict, "weights_dict must be a dictionary."
+        assert weights_dict["values_col"] in joined_gdf.columns, f"{weights_dict['values_col']} not found in joined_gdf columns."
+        assert weights_dict["weights_col"] in joined_gdf.columns, f"{weights_dict['weights_col']} not found in joined_gdf columns."
+
+        agg_gdf = agg_gdf_groups.apply(lambda x: pd.Series(np.average(x[weights_dict["values_col"]], weights=x[weights_dict["weights_col"]], axis=0), weights_dict["values_col"]))
+    
+    else:
+        agg_gdf = agg_gdf_groups.sum()
+    
     agg_gdf = agg_gdf.reset_index()
 
     # adding the geometry column back
