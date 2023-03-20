@@ -119,7 +119,11 @@ def convert_region_df_to_gdf(df, region_gdf, common_column_mapper, crs=None):
 
     return region_gdf
 
-def aggregate_regional_level_data(lower_level_gdf, upper_level_gdf, ID_column_name):
+def aggregate_regional_level_data(lower_level_gdf, upper_level_gdf, ID_column_name, crs):
+
+    if lower_level_gdf.crs != upper_level_gdf.crs:
+        lower_level_gdf = lower_level_gdf.to_crs(crs)
+        upper_level_gdf = upper_level_gdf.to_crs(crs)
 
     # aggregating to ward level
     agg_gdf = upper_level_gdf.sjoin(lower_level_gdf, how="left")
@@ -130,3 +134,10 @@ def aggregate_regional_level_data(lower_level_gdf, upper_level_gdf, ID_column_na
     agg_gdf = upper_level_gdf[[ID_column_name, "geometry"]].merge(agg_gdf, on=ID_column_name, how="outer")
 
     return agg_gdf
+
+def extract_lsoa_imd_data(imd_data, lsoa, columns_to_keep, ID_column_name="LSOA11CD"):
+    
+    imd_lsoa = imd_data[imd_data["lsoa11cd"].isin(lsoa[ID_column_name])].reset_index(drop=True)
+    imd_lsoa = imd_lsoa[columns_to_keep]
+
+    return imd_lsoa
