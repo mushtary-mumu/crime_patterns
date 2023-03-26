@@ -151,6 +151,7 @@ def task_prepare_ward_level_crime_data(depends_on, produces):
     {
         "lsoa_imd_data_cleaned": data_clean / "IMD_LSOA_2019.shp",
         "ward_imd_data_cleaned": data_clean / "IMD_Ward_2019.shp",
+        "ward_pop_data_cleaned": data_clean / "Population_Ward_2019.shp",
     }
 )
 
@@ -164,7 +165,7 @@ def task_prepare_ward_level_IMD_data(depends_on, produces):
     london_wards = gpd.read_file(depends_on["london_ward_shp"])
     imd_uk_lsoa = gpd.read_file(depends_on["lsoa_uk_imd_shp"])
     
-    score_col_names = imd_uk_lsoa.columns[imd_uk_lsoa.columns.str.contains("Score")]
+    score_col_names = list(imd_uk_lsoa.columns[imd_uk_lsoa.columns.str.contains("Score")])
     columns_to_keep = ["lsoa11cd", "lsoa11nm", "geometry", "TotPop"] + list(score_col_names)
 
     # TODO: move some input parameters to data_info.yaml
@@ -183,8 +184,17 @@ def task_prepare_ward_level_IMD_data(depends_on, produces):
                                                             crs = config.CRS,
                                                             weights_dict = {"values_col": score_col_names, "weights_col": "TotPop"}
                                                             )
+    
+    pop_london_ward_2019 = dm.aggregate_regional_level_data(
+                                                lower_level_gdf = imd_uk_lsoa,
+                                                upper_level_gdf = london_wards,
+                                                ID_column_name = "GSS_CODE",
+                                                crs = config.CRS,
+                                                )[["GSS_CODE", "TotPop", "geometry"]]
 
     # Save to disk
     imd_london_lsoa_2019.to_file(produces["lsoa_imd_data_cleaned"])
     imd_london_ward_2019.to_file(produces["ward_imd_data_cleaned"])
+    pop_london_ward_2019.to_file(produces["ward_pop_data_cleaned"])
+
 # %%

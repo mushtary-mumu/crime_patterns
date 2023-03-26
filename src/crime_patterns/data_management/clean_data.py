@@ -132,14 +132,19 @@ def aggregate_regional_level_data(lower_level_gdf, upper_level_gdf, ID_column_na
 
     if weights_dict is not None:
         assert type(weights_dict) == dict, "weights_dict must be a dictionary."
-        assert weights_dict["values_col"] in joined_gdf.columns, f"{weights_dict['values_col']} not found in joined_gdf columns."
-        assert weights_dict["weights_col"] in joined_gdf.columns, f"{weights_dict['weights_col']} not found in joined_gdf columns."
+        # assert weights_dict["values_col"] in joined_gdf.columns, f"{weights_dict['values_col']} not found in joined_gdf columns."
+        # assert weights_dict["weights_col"] in joined_gdf.columns, f"{weights_dict['weights_col']} not found in joined_gdf columns."
+        assert all(
+            col in joined_gdf.columns for col in weights_dict["values_col"]
+        ), "All specified columns in weights_dict 'values_col' not found in GeoDataFrame columns."
 
+        assert weights_dict["weights_col"] in joined_gdf.columns, f"{weights_dict['weights_col']} not found in joined_gdf columns."
+        
         agg_gdf = agg_gdf_groups.apply(lambda x: pd.Series(np.average(x[weights_dict["values_col"]], weights=x[weights_dict["weights_col"]], axis=0), weights_dict["values_col"]))
-    
+
     else:
         agg_gdf = agg_gdf_groups.sum()
-    
+
     agg_gdf = agg_gdf.reset_index()
 
     # adding the geometry column back
