@@ -75,7 +75,7 @@ def task_clean_crime_incidences_data(depends_on, produces):
     ## TODO: consider renaming columns that have more than 10 characters to avoid truncation
     crime_data_yearly_gdf = dm.convert_points_df_to_gdf(df = crime_data_yearly).to_crs(config.CRS)
     
-    london_wards = gpd.read_file(depends_on["london_ward_shp"])
+    london_wards = gpd.read_file(depends_on["london_ward_shp"]).to_crs(config.CRS)
     london_wards["dissolve_key"] = "dissolve"
     london_ward_dissolved = london_wards.dissolve(by="dissolve_key")
     london_ward_dissolved.loc[:, "NAME"]  = "Greater London Area"
@@ -90,8 +90,8 @@ def task_clean_crime_incidences_data(depends_on, produces):
     {
         "scripts": ["clean_data.py"],
         "data_info": src / "data_management" / "data_info.yaml",
-        "london_lsoa_shp": data_raw / data_info['data_raw_dirs']["statistical_gis_boundaries_london"] / "LSOA_2011_London_gen_MHW.shp",
-        "london_ward_shp": data_raw / data_info['data_raw_dirs']["statistical_gis_boundaries_london"] / "London_Ward.shp",
+        "london_lsoa_shp": data_raw / data_info['data_raw_dirs']["statistical_gis_boundaries_london"] / data_info['data_raw_dirs']["statistical_gis_boundaries_london"] / "ESRI" / "LSOA_2011_London_gen_MHW.shp",
+        "london_ward_shp": data_raw / data_info['data_raw_dirs']["statistical_gis_boundaries_london"] / data_info['data_raw_dirs']["statistical_gis_boundaries_london"] / "ESRI" / "London_Ward.shp",
         "lsoa_crime_data": data_raw / data_info['data_raw_dirs']["lsoa_level_crime"] / "MPS LSOA Level Crime (Historical).csv"
     },
 )
@@ -130,10 +130,71 @@ def task_prepare_ward_level_crime_data(depends_on, produces):
                                                     lower_level_gdf = mps_lsoa_burglary_2019_gdf,
                                                     upper_level_gdf = london_wards,
                                                     ID_column_name = "GSS_CODE",
+                                                    crs = config.CRS,
                                                     )
 
     # Save to disk
     mps_lsoa_burglary_2019_gdf.to_file(produces["lsoa_crime_data_cleaned"])
     mps_ward_burglary_2019_gdf.to_file(produces["ward_crime_data_cleaned"])
+
+# %%
+@pytask.mark.depends_on(
+    {
+        "scripts": ["clean_data.py"],
+        "data_info": src / "data_management" / "data_info.yaml",
+        "london_lsoa_shp": data_raw / data_info['data_raw_dirs']["statistical_gis_boundaries_london"] / data_info['data_raw_dirs']["statistical_gis_boundaries_london"] / "ESRI" / "LSOA_2011_London_gen_MHW.shp",
+        "london_ward_shp": data_raw / data_info['data_raw_dirs']["statistical_gis_boundaries_london"] / data_info['data_raw_dirs']["statistical_gis_boundaries_london"] / "ESRI" / "London_Ward.shp",
+        "lsoa_uk_imd_shp": data_raw / data_info['data_raw_dirs']["imd_lsoa_shp"] / "IMD_2019.shp",
+    }
+)
+@pytask.mark.produces(
+    {
+        "lsoa_imd_data_cleaned": data_clean / "IMD_LSOA_2019.shp",
+        "ward_imd_data_cleaned": data_clean / "IMD_Ward_2019.shp",
+        "ward_pop_data_cleaned": data_clean / "Population_Ward_2019.shp",
+    }
+)
+
+def task_prepare_ward_level_IMD_data(depends_on, produces):
+
+    # common_column_mapper = {"df": "LSOA Code",
+    #                         "gdf": "LSOA11CD"}
+
+    ## load
+    london_lsoa = gpd.read_file(depends_on["london_lsoa_shp"])
+    london_wards = gpd.read_file(depends_on["london_ward_shp"])
+    imd_uk_lsoa = gpd.read_file(depends_on["lsoa_uk_imd_shp"])
+    
+    score_col_names = list(imd_uk_lsoa.columns[imd_uk_lsoa.columns.str.contains("Score")])
+    columns_to_keep = ["lsoa11cd", "lsoa11nm", "geometry", "TotPop"] + list(score_col_names)
+
+    # TODO: move some input parameters to data_info.yaml
+    imd_london_lsoa_2019 = dm.extract_lsoa_imd_data(
+                                                        imd_data = imd_uk_lsoa,
+                                                        lsoa = london_lsoa,
+                                                        columns_to_keep = columns_to_keep,
+                                                        ID_column_name = "LSOA11CD",
+                                                        
+                                                    )
+
+    imd_london_ward_2019 = dm.aggregate_regional_level_data(
+                                                            lower_level_gdf = imd_london_lsoa_2019,
+                                                            upper_level_gdf = london_wards,
+                                                            ID_column_name = "GSS_CODE",
+                                                            crs = config.CRS,
+                                                            weights_dict = {"values_col": score_col_names, "weights_col": "TotPop"}
+                                                            )
+    
+    pop_london_ward_2019 = dm.aggregate_regional_level_data(
+                                                lower_level_gdf = imd_uk_lsoa,
+                                                upper_level_gdf = london_wards,
+                                                ID_column_name = "GSS_CODE",
+                                                crs = config.CRS,
+                                                )[["GSS_CODE", "TotPop", "geometry"]]
+
+    # Save to disk
+    imd_london_lsoa_2019.to_file(produces["lsoa_imd_data_cleaned"])
+    imd_london_ward_2019.to_file(produces["ward_imd_data_cleaned"])
+    pop_london_ward_2019.to_file(produces["ward_pop_data_cleaned"])
 
 # %%
