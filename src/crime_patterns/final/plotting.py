@@ -131,9 +131,9 @@ def plot_dbscan_clusters(data, labels, region, crs="EPSG:4326", figsize=(8, 6)):
 
     return fig, ax
 
-def plot_regional_level_crime(region, column_name, figsize=(8, 6), **kwargs):
+def plot_choropleth_map(region, column_name, figsize=(8, 6), choropleth_kwds=None, **kwargs):
 
-    """Plot regional level crime.
+    """Plot regional level data on to a choropleth map.
     
     Parameters:
     -----------
@@ -142,9 +142,12 @@ def plot_regional_level_crime(region, column_name, figsize=(8, 6), **kwargs):
 
     column_name: str
         Name of the column to plot.
+
+    choropleth_kwds: dict
+        Keywords used for creating and designing the choropleth map.
     
     kwargs: dict
-        Dictionary containing the keyword arguments to be passed to the geogpandas.GeoDataFrame.plot function.
+        Dictionary containing the additional keyword arguments to be passed to the geogpandas.GeoDataFrame.plot function.
 
     figsize: tuple
         Size of the figure.
@@ -158,26 +161,19 @@ def plot_regional_level_crime(region, column_name, figsize=(8, 6), **kwargs):
 
     fig, ax = plt.subplots(figsize=figsize)
 
-    cmap = kwargs.get("cmap", "Reds")
-    legend = kwargs.get("legend", True)
-    scheme = kwargs.get("scheme", "Quantiles")
-    k = kwargs.get("k", 5)
-    edgecolor = kwargs.get("edgecolor", "white")
-    linewidth = kwargs.get("linewidth", 0.0)
-    alpha = kwargs.get("alpha", 0.75)
-    legend = kwargs.get("legend", True)
-    legend_kwds = kwargs.get("legend_kwds", {"loc": 2})
+    if choropleth_kwds is None:
+        choropleth_kwds = {}
 
-    region.plot(ax=ax, column=column_name, 
-                cmap = cmap,
-                scheme = scheme,
-                k = k,
-                edgecolor = edgecolor,
-                linewidth = linewidth,
-                alpha = alpha,
-                legend = legend,
-                legend_kwds = legend_kwds,
-                **kwargs)
+    choropleth_kwds.setdefault("cmap", "Reds")
+    choropleth_kwds.setdefault("legend", True)
+    choropleth_kwds.setdefault("scheme", "Quantiles")
+    choropleth_kwds.setdefault("k", 5)
+    choropleth_kwds.setdefault("edgecolor", "white")
+    choropleth_kwds.setdefault("linewidth", 0.0)
+    choropleth_kwds.setdefault("alpha", 0.75)
+    choropleth_kwds.setdefault("legend_kwds", {"loc": 2})
+
+    region.plot(ax=ax, column=column_name, **choropleth_kwds, **kwargs)
 
     return fig, ax
 
