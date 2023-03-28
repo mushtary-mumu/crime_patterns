@@ -12,6 +12,9 @@
 # bld
 bld/
 
+# src
+src/crime_patterns/data/
+
 # latex
 *.aux
 *.bbl
