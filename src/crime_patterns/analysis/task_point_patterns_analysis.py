@@ -1,5 +1,5 @@
 """Tasks running the core analyses."""
-
+#%%
 import numpy as np
 import pandas as pd
 import geopandas as gpd
@@ -32,13 +32,13 @@ if not os.path.isdir(results_dir):
 
 if not os.path.isdir(plots_dir):
     os.makedirs(plots_dir)
-
+#%%
 @pytask.mark.depends_on(
     {
         "scripts": ["point_patterns.py"],
         "crime_incidences": os.path.join(data_clean, r"city-of-london-burglaries-2019-cleaned.csv"),
         "london_greater_area": os.path.join(data_clean,  "Greater_London_Area.shp")
-    },
+    }
 )
 @pytask.mark.produces(
     {
@@ -65,6 +65,7 @@ def task_point_patterns_analysis(depends_on, produces):
     densities.to_netcdf(produces["densities"], mode='w', format="NETCDF4", engine="netcdf4")
     utils.save_object_to_pickle(dbscan_clusters, produces["dbscan_clusters"])
 
+#%%
 
 @pytask.mark.depends_on(
     {
@@ -75,6 +76,7 @@ def task_point_patterns_analysis(depends_on, produces):
 @pytask.mark.produces(
     {
     "weights_matrix_ward": os.path.join(models_dir, "weights_matrix_ward.pickle"),
+    "moran": os.path.join(models_dir, "moran.pickle"),
     "burglary_ward_lag": os.path.join(results_dir, "burglary_ward_lag.shp"),
     }
 )
@@ -88,9 +90,13 @@ def task_spatial_autocorrelation_analysis(depends_on, produces):
 
     ## Calculate spatial lag
     burglary_ward_lag = spatial_regression.calculate_spatial_lag(data=burglary_ward, y_col_name="2019_total", weights_matrix=w_knn_8_ward, ID_column_name="GSS_CODE")
+
+    ## Calculate Moran's I
+    moran = spatial_regression.calculate_morans_I(data=burglary_ward, y_col_name="2019_total", weights_matrix=w_knn_8_ward, transform="R")
     
-    ## Save weights matrix
+    ## Save weights matrix and Moran
     utils.save_object_to_pickle(burglary_ward, produces["weights_matrix_ward"])
+    utils.save_object_to_pickle(moran, produces["moran"])
 
     ## Save spatial lags
     burglary_ward_lag.to_file(produces["burglary_ward_lag"])

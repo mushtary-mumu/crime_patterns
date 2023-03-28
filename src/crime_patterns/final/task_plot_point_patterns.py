@@ -1,4 +1,5 @@
 """Tasks plotting the point patterns analysis results."""
+#%%
 
 import numpy as np
 import pandas as pd
@@ -22,6 +23,7 @@ bld = config.BLD
 data_raw = src / "data"
 data_clean = bld / "python" / "data"
 results_dir = bld / "python" / "results" 
+models_dir = bld / "python" / "models"
 plots_dir = bld / "python" / "figures"
 
 if not os.path.isdir(results_dir):
@@ -30,6 +32,7 @@ if not os.path.isdir(results_dir):
 if not os.path.isdir(plots_dir):
     os.makedirs(plots_dir)
 
+#%%
 @pytask.mark.depends_on(
     {
         "scripts": ["plotting.py"],
@@ -37,7 +40,7 @@ if not os.path.isdir(plots_dir):
         "densities": os.path.join(results_dir, "kernel_density_estimates.nc"),
         "dbscan_clusters": os.path.join(results_dir, "dbscan_clusters.pickle"),
         "london_borough": os.path.join(data_raw, "statistical-gis-boundaries-london", "statistical-gis-boundaries-london", "ESRI", "London_Borough_Excluding_MHW.shp")
-    },
+    }
 )
 @pytask.mark.produces(
     {
@@ -87,3 +90,119 @@ def task_plot_point_patterns(depends_on, produces):
     plt.suptitle("Clustered Burglary Incidences (DBCAN)")
 
     fig.savefig(produces["burglary_clusters"], dpi=300, bbox_inches='tight')
+
+
+@pytask.mark.depends_on(
+    {
+        "scripts": ["plotting.py"],
+        "london_borough": os.path.join(data_raw, "statistical-gis-boundaries-london", "statistical-gis-boundaries-london", "ESRI", "London_Borough_Excluding_MHW.shp"),
+        "imd_ward": os.path.join(data_clean, r"IMD_Ward_2019.shp"),
+        "imd_lsoa": os.path.join(data_clean, r"IMD_LSOA_2019.shp"),
+        "burglary_ward": os.path.join(data_clean, r"MPS_Ward_Level_burglary_2019.shp")
+        
+    }
+)
+@pytask.mark.produces(
+    {
+    "imd_scores_lsoa": os.path.join(plots_dir, 'imd_scores_lsoa.png'),
+    "imd_scores_ward": os.path.join(plots_dir, "imd_scores_ward.png"),
+    "burlary_ward": os.path.join(plots_dir, "burlary_ward.png"),
+    }    
+)
+def task_plot_cleaned_data(depends_on, produces):
+
+    ## Load Data
+    london_borough = gpd.read_file(depends_on["london_borough"])
+
+    imd_ward = gpd.read_file(depends_on["imd_ward"])
+    imd_lsoa = gpd.read_file(depends_on["imd_lsoa"])
+    burglary_ward = gpd.read_file(depends_on["burglary_ward"])
+
+    # Setup figure and axis
+    height = 8
+    width = height*0.75
+
+    ### Plot LSOA level IMD scores
+    choropleth_kwds = {"scheme": "natural_breaks", "cmap": "viridis_r"}
+
+    fig, ax = plotting.plot_choropleth_map(region=imd_lsoa, column_name="IMDScore", figsize=(height, width), choropleth_kwds = choropleth_kwds)
+
+    london_borough.to_crs(imd_lsoa.crs).plot(ax=ax, fc="None")
+
+    ax.set_axis_off()
+    ax.set_title("IMD Score by LSOA")
+    fig.savefig(produces["imd_scores_lsoa"], dpi=300, bbox_inches='tight')
+
+    ### Plot Ward level IMD scores
+    fig, ax = plotting.plot_choropleth_map(region=imd_ward, column_name="IMDScore", figsize=(height, width), choropleth_kwds = choropleth_kwds)
+
+    london_borough.to_crs(imd_ward.crs).plot(ax=ax, fc="None")
+
+    ax.set_axis_off()
+    ax.set_title("IMD Score by Ward")
+    fig.savefig(produces["imd_scores_ward"], dpi=300, bbox_inches='tight')
+
+    ### Plot Ward level burglary counts 
+    choropleth_kwds = {"scheme": "natural_breaks", "cmap": "Reds"}
+
+    fig, ax = plotting.plot_choropleth_map(region=burglary_ward, column_name="2019_total", figsize=(height, width), choropleth_kwds = choropleth_kwds)
+
+    london_borough.to_crs(burglary_ward.crs).plot(ax=ax, fc="None")
+
+    ax.set_axis_off()
+    ax.set_title("No. of Burglaries by Ward")
+    fig.savefig(produces["burlary_ward"], dpi=300, bbox_inches='tight')
+
+# %%
+@pytask.mark.depends_on(
+    {
+        "scripts": ["plotting.py"],
+        "moran": os.path.join(models_dir, "moran.pickle"),
+        "weights_matrix_ward": os.path.join(models_dir, "weights_matrix_ward.pickle"),
+        "london_borough": os.path.join(data_raw, "statistical-gis-boundaries-london", "statistical-gis-boundaries-london", "ESRI", "London_Borough_Excluding_MHW.shp"),
+        "burglary_ward_lag": os.path.join(results_dir, "burglary_ward_lag.shp")
+    }
+)
+@pytask.mark.produces(
+    {
+    "moran_scatter": os.path.join(plots_dir, 'moran_scatter.png'),
+    "moran_distribution": os.path.join(plots_dir, "moran_distribution.png"),
+    "burglary_ward_lag": os.path.join(plots_dir, "burglary_ward_lag.png"),
+    }    
+)
+
+def task_plot_spatial_autocorrelation(depends_on, produces):
+
+    ## Load Data
+    moran = utils.load_object_from_pickle(depends_on["moran"])
+    burglary_ward_lag = gpd.read_file(depends_on["burglary_ward_lag"])
+    london_borough = gpd.read_file(depends_on["london_borough"])
+
+    # Setup figure and axis
+    height = 8
+    width = height*0.75
+
+    ## Plot Moran's I Scatter 
+    fig, ax = plotting.plot_moran_scatter(moran)
+
+    ax.set_xlabel("Burglary, 2019")
+    ax.set_ylabel("Burglary - Spatial Lag, 2019")
+    fig.savefig(produces["moran_scatter"], dpi=300, bbox_inches='tight')
+
+
+    ## Plot Moran's I Distribution
+    fig, ax = plotting.plot_moran_distribution(moran)
+    fig.savefig(produces["moran_distribution"], dpi=300, bbox_inches='tight')
+
+    ## Plot Burglary Spatial Lag
+    fig, ax = plotting.plot_choropleth_map(
+                                            region=burglary_ward_lag,
+                                            column_name="lag",
+                                            figsize=(height, width),
+                                            )
+    
+    london_borough.to_crs(burglary_ward_lag.crs).plot(ax=ax, fc="None")
+
+    ax.set_title("Burglary 2019 - Spatial Lag")
+    ax.set_axis_off()
+    fig.savefig(produces["burglary_ward_lag"], dpi=300, bbox_inches='tight')

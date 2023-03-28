@@ -83,9 +83,9 @@ def calculate_spatial_lag(data, y_col_name, weights_matrix, ID_column_name, tran
 
     weights_matrix.transform = transform
 
-    data[f"{y_col_name}_lag"] = weights_matrix.sparse * data[y_col_name].values
+    data["lag"] = weights_matrix.sparse * data[y_col_name].values
 
-    spatial_lag = data[[y_col_name, f"{y_col_name}_lag", "geometry"]]
+    spatial_lag = data[[y_col_name, "lag", "geometry"]]
 
     return spatial_lag
 

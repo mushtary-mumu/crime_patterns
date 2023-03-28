@@ -83,7 +83,6 @@ def test_calculate_morans_I(mock_crime_data, mock_weights_matrix):
 
 
 #%%
-
 def test_perform_spatial_regression(mock_crime_data, mock_weights_matrix):
 
     expected_betas = np.array([[ 0.02170552],
