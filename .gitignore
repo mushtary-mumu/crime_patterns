@@ -25,6 +25,9 @@ src/notebooks/
 *.fls
 *.log
 *.out
+*.toc
+*.snm
+*.nav
 *.pdf
 *.run.xml
 *.synctex.gz
