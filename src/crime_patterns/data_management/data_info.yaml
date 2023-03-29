@@ -23,14 +23,3 @@ uk_crime_data_2019_columns_to_drop:
   - Last outcome category
   - Context
   
-# categorical_columns:
-#   - gender
-#   - marital_status
-#   - highest_qualification
-#   - smoke
-
-# column_rename_mapping:
-#   highest_qualification: qualification
-
-# outcome: smoke
-# outcome_numerical: smoke_numerical  # created during the clean_data step

@@ -7,6 +7,8 @@ from sklearn.datasets import make_blobs
 from crime_patterns.analysis import spatial_regression
 from libpysal.weights import KNN
 from shapely.geometry import Polygon, Point
+from crime_patterns.utilities import read_yaml
+from crime_patterns.config import TEST_DIR
 
 def pytest_configure():
     pytest.DESIRED_PRECISION = 10e-2
@@ -14,6 +16,7 @@ def pytest_configure():
     pytest.miny = 51.28675865
     pytest.maxx = 0.33404393 
     pytest.maxy = 51.69187697
+    pytest.sample_raw_data_path = TEST_DIR / "data" / "sample_crime_incidence_raw.csv"
 
 @pytest.fixture()
 def mock_crime_polygons():
@@ -80,3 +83,7 @@ def mock_crime_points():
 @pytest.fixture()
 def mock_weights_matrix(mock_crime_polygons):
     return KNN.from_dataframe(mock_crime_polygons, k=8)
+
+@pytest.fixture()
+def raw_data_info():
+    return read_yaml(TEST_DIR / "data" / "sample_raw_data_info.yaml")

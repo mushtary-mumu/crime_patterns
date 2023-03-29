@@ -1,0 +1,14 @@
+---
+year: 2019
+month: 01
+
+crime_type: Burglary
+
+columns_to_drop:
+  - Crime ID
+  - Falls within
+  - Last outcome category
+  - Context
+
+outcome_column: Crime type
+
