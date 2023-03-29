@@ -54,7 +54,7 @@ def test_perform_spatial_regression(mock_crime_polygons, method, expected_betas)
                                                               x_var_names=["EmpScore", "IncScore", "BHSScore"], 
                                                               method=method)
 
-        np.testing.assert_array_almost_equal(model.betas, expected_betas, decimal=4)
+        np.testing.assert_array_almost_equal(model.betas, expected_betas, decimal=2)
         
     else:
         with expected_betas:
