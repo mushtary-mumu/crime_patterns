@@ -20,6 +20,19 @@
     sortcites=true,
     backend=biber
 ]{biblatex}
+
+% for figures
+\usepackage{subcaption}
+\usepackage[english]{babel}
+
+\usepackage{graphicx}
+\graphicspath{{../bld/python/figures/}}
+
+% for csv tables
+\usepackage{siunitx,array,booktabs}
+\usepackage{csvsimple}
+\usepackage{adjustbox}
+
 \AtBeginDocument{\toggletrue{blx@useprefix}}
 \AtBeginBibliography{\togglefalse{blx@useprefix}}
 \setlength{\bibitemsep}{1.5ex}
@@ -48,46 +61,76 @@
     \note{~}
 \end{frame}
 
-
+%% Slide with citation
 \begin{frame}[t]
-    \frametitle{heading here}
+    \frametitle{Gathering Raw Data}
+    Raw data was gathered from the following sources:
     \begin{itemize}
-        \item<+-> Please cite this template as: \citet{GaudeckerEconProjectTemplates}
-        \item<+-> Example data is taken from \url{https://www.stem.org.uk/resources/elibrary/resource/28452/large-datasets-stats4schools}
+        \item Please cite this template as: \citet{GaudeckerEconProjectTemplates}
+        \item Example data is taken from \url{https://www.stem.org.uk/resources/elibrary/resource/28452/large-datasets-stats4schools}
     \end{itemize}
     \note{~}
 \end{frame}
 
+% \begin{frame}[t]
+%     \begin{figure}[H]
 
+%         \centering
+%         \includegraphics[width=0.5\textwidth]{../bld/python/figures/smoking_by_marital_status}
 
-\begin{frame}[t]
-    \begin{figure}[H]
+%         \caption{\emph{Python:} Model predictions of the smoking probability over the
+%             lifetime. Each colored line represents a case where marital status is fixed to
+%             one of the values present in the data set.}
+%         \label{fig:python-predictions}
 
+%     \end{figure}
+% \end{frame}
+
+%% Slide with a figure and text in two seperate columns
+\begin{frame}{Figure with other content}
+    \begin{columns}
+        % Column 1
+        \begin{column}{0.5\textwidth}
+                Here I can explain in detail what the figure represents.
+        \end{column}
+        % Column 2    
+        \begin{column}{0.5\textwidth}
+            \begin{figure}
+            \centering
+                \includegraphics[width=1.0\textwidth]{burlary_ward.png}
+                \caption{A figure that is next to a certain explanation.}
+            \end{figure}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+%% Slide with two figures and text 
+\begin{frame}{Subfigures in Beamer}
+    You can see in Figure \ref{fig:images} that I have inserted two images, Figures \ref{fig:nature1} and \ref{fig:nature2}, that I can reference independently. More text, More text, More text, More text, More text,More text ,More text 
+    \begin{figure}
         \centering
-        \includegraphics[width=0.5\textwidth]{../bld/python/figures/smoking_by_marital_status}
-
-        \caption{\emph{Python:} Model predictions of the smoking probability over the
-            lifetime. Each colored line represents a case where marital status is fixed to
-            one of the values present in the data set.}
-        \label{fig:python-predictions}
-
+            \begin{subfigure}[t]{0.4\textwidth}
+                \includegraphics[width=\textwidth]{burlary_ward.png}
+                \caption{Image of the nature V1.}\label{fig:nature1}
+            \end{subfigure}
+            \begin{subfigure}[t]{0.4\textwidth}
+                \includegraphics[width=\textwidth]{imd_scores_ward.png}
+                \caption{Image of the nature V2.}\label{fig:nature2}
+            \end{subfigure}
+        \caption{Two images I want to insert.}\label{fig:images}
     \end{figure}
+\end{frame}
+                
+% Slide with table
+\begin{frame}{Tables in Beamer}
+    \small\begin{table}[!h]
+        \input{../bld/python/tables/model_spatial_ml_error_summary.tex}
+        \caption{\label{tab:python-summary}\emph{Python:} Estimation results of the
+            linear Logistic regression.}
+    \end{table}
 \end{frame}
 
 
-
-
-
-
-% Print black screen only in presentation mode for finishing up.
-\mode<beamer> {
-    \beamersetaveragebackground{black}
-    \begin{frame}
-        \frametitle{}
-    \end{frame}
-
-    \beamersetaveragebackground{white}
-}
 
 \begin{frame}[allowframebreaks]
     \frametitle{References}
