@@ -15,7 +15,7 @@ import crime_patterns.config as config
 import crime_patterns.data_management as dm
 
 from crime_patterns.final import plotting
-from crime_patterns.analysis import point_patterns 
+from crime_patterns.analysis import spatial_regression 
 
 ## define paths
 src = config.SRC
@@ -25,6 +25,7 @@ data_clean = bld / "python" / "data"
 results_dir = bld / "python" / "results" 
 models_dir = bld / "python" / "models"
 plots_dir = bld / "python" / "figures"
+tables_dir = bld / "python" / "tables"
 
 if not os.path.isdir(results_dir):
     os.makedirs(results_dir)
@@ -206,3 +207,30 @@ def task_plot_spatial_autocorrelation(depends_on, produces):
     ax.set_title("Burglary 2019 - Spatial Lag")
     ax.set_axis_off()
     fig.savefig(produces["burglary_ward_lag"], dpi=300, bbox_inches='tight')
+
+# %%
+@pytask.mark.depends_on(
+    {
+    "model_spatial_ols": os.path.join(models_dir, "model_spatial_ols.pickle"),
+    "model_spatial_ml_lag": os.path.join(models_dir, "model_spatial_ml_lag.pickle"),
+    "model_spatial_ml_error": os.path.join(models_dir, "model_spatial_ml_error.pickle"),
+    },
+)
+@pytask.mark.produces(
+    {
+    "summary_spatial_ols_tex": os.path.join(tables_dir, "model_spatial_ols_summary.tex"),
+    "summary_spatial_ml_lag_tex": os.path.join(tables_dir, "model_spatial_ml_lag_summary.tex"),
+    "summary_spatial_ml_error_tex": os.path.join(tables_dir, "model_spatial_ml_error_summary.tex"),
+    }
+)
+def task_create_latex_tables(depends_on, produces):
+    
+    ## Load models
+    model_ols = utils.load_object_from_pickle(depends_on["model_spatial_ols"])
+    model_ml_lag = utils.load_object_from_pickle(depends_on["model_spatial_ml_lag"])
+    model_ml_error = utils.load_object_from_pickle(depends_on["model_spatial_ml_error"])
+
+    ## Save summaries
+    spatial_regression.get_reg_summary(model_ols, "OLS").to_latex(produces["summary_spatial_ols_tex"])
+    spatial_regression.get_reg_summary(model_ml_lag, "ML_Lag").to_latex(produces["summary_spatial_ml_lag_tex"])
+    spatial_regression.get_reg_summary(model_ml_error, "ML_Error").to_latex(produces["summary_spatial_ml_error_tex"])
