@@ -114,9 +114,9 @@ def task_spatial_autocorrelation_analysis(depends_on, produces):
     "model_spatial_ols": os.path.join(models_dir, "model_spatial_ols.pickle"),
     "model_spatial_ml_lag": os.path.join(models_dir, "model_spatial_ml_lag.pickle"),
     "model_spatial_ml_error": os.path.join(models_dir, "model_spatial_ml_error.pickle"),
-    "summary_spatial_ols": os.path.join(results_dir, "model_spatial_ols_summary.csv"),
-    "summary_spatial_ml_lag": os.path.join(results_dir, "model_spatial_ml_lag_summary.csv"),
-    "summary_spatial_ml_error": os.path.join(results_dir, "model_spatial_ml_error_summary.csv"),
+    "summary_spatial_ols_csv": os.path.join(results_dir, "model_spatial_ols_summary.csv"),
+    "summary_spatial_ml_lag_csv": os.path.join(results_dir, "model_spatial_ml_lag_summary.csv"),
+    "summary_spatial_ml_error_csv": os.path.join(results_dir, "model_spatial_ml_error_summary.csv"),
     }
 )
 def task_spatial_regression_analysis(depends_on, produces):
@@ -128,9 +128,9 @@ def task_spatial_regression_analysis(depends_on, produces):
 
     ## Merge data
     db = spatial_regression.prepare_data_for_spatial_regression(crime_data=burglary_ward, explanatory_data=imd_ward, population=pop_ward, crime_col_name="2019_total", population_col_name="TotPop", ID_col_name="GSS_CODE", standardize=True)
-    db = db.rename(columns={"2019_total_rate": "burglary_rate_2019"})
+    db = db.rename(columns={"2019_total_rate": "burglaryRate2019"})
 
-    dependent_variable_name = 'burglary_rate_2019'
+    dependent_variable_name = 'burglaryRate2019'
     independent_variable_names = ['IncScore', 'EmpScore', 'EnvScore', 'BHSScore', 'EduScore']
 
     ## Run spatial regression
@@ -144,6 +144,6 @@ def task_spatial_regression_analysis(depends_on, produces):
     utils.save_object_to_pickle(model_ml_error, produces["model_spatial_ml_error"])
 
     ## Save summaries
-    spatial_regression.get_reg_summary(model_ols, "OLS").to_csv(produces["summary_spatial_ols"])
-    spatial_regression.get_reg_summary(model_ml_lag, "ML_Lag").to_csv(produces["summary_spatial_ml_lag"])
-    spatial_regression.get_reg_summary(model_ml_error, "ML_Error").to_csv(produces["summary_spatial_ml_error"])
+    spatial_regression.get_reg_summary(model_ols, "OLS").to_csv(produces["summary_spatial_ols_csv"])
+    spatial_regression.get_reg_summary(model_ml_lag, "ML_Lag").to_csv(produces["summary_spatial_ml_lag_csv"])
+    spatial_regression.get_reg_summary(model_ml_error, "ML_Error").to_csv(produces["summary_spatial_ml_error_csv"])
