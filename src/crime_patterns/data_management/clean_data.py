@@ -134,3 +134,14 @@ def extract_lsoa_imd_data(imd_data, lsoa, columns_to_keep, ID_column_name="LSOA1
     imd_lsoa = imd_lsoa[columns_to_keep]
 
     return imd_lsoa
+
+def dissolve_gdf_polygons(gdf, dissolve_name, dissolve_key = None):
+    
+    if dissolve_key is None:
+
+        gdf["dissolve_key"] = "dissolve"
+    
+    gdf_dissolved = gdf.dissolve(by="dissolve_key")
+    gdf_dissolved.loc[:, "NAME"]  = dissolve_name
+
+    return gdf_dissolved
