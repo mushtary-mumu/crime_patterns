@@ -1,6 +1,6 @@
 ---
 # data_name: data.csv
-crime_year: "2019"
+crime_year: '2019'
 crime_type: Burglary
 
 urls:
@@ -22,4 +22,3 @@ uk_crime_data_2019_columns_to_drop:
   - Falls within
   - Last outcome category
   - Context
-  

@@ -8,12 +8,12 @@ concurrency:
 on:
   push:
     branches:
-    - main
-    - develop
+      - main
+      - develop
 
   pull_request:
     branches:
-    - '*'
+      - '*'
 jobs:
   run-tests:
     if: "!contains(github.event.commits[0].message, '[skip ci]')"

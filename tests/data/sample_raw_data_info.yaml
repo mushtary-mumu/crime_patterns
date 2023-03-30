@@ -11,4 +11,3 @@ columns_to_drop:
   - Context
 
 outcome_column: Crime type
-
