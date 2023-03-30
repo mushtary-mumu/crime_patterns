@@ -139,7 +139,31 @@ def prepare_data_for_spatial_regression(
     ID_col_name,
     standardize=True,
 ):
+    """Prepare data for spatial regression.
 
+    Parameters:
+    -----------
+    crime_data: geopandas.GeoDataFrame
+        GeoDataFrame containing the crime data.
+    explanatory_data: geopandas.GeoDataFrame
+        GeoDataFrame containing the explanatory data.
+    population: pandas.DataFrame
+        DataFrame containing the population data.
+    crime_col_name: str
+        Name of the column containing the crime data.
+    population_col_name: str
+        Name of the column containing the population data.
+    ID_col_name: str
+        Name of the column containing the ID of the observations.
+    standardize: bool
+        Whether to standardize the data or not.
+
+    Returns:
+    --------
+    db: geopandas.GeoDataFrame
+        GeoDataFrame containing the data to be used for performing spatial regression.
+
+    """
     db = crime_data[[ID_col_name, crime_col_name]].merge(
         explanatory_data.drop("geometry", axis=1),
         on=ID_col_name,
@@ -273,6 +297,24 @@ def perform_spatial_regression(db, y_var_name, x_var_names, method="OLS"):
 
 
 def get_reg_summary(model, method):
+    """Function to get the regression summary.
+
+    Parameters:
+    -----------
+    model: spreg.ols.OLS
+        Spatial regression model.
+    method: str
+        Spatial regression model type for which summary is to be prepared. Options are:
+        - "OLS"
+        - "ML_Lag"
+        - "ML_Error"
+
+    Returns:
+    --------
+    reg_summary: pandas.DataFrame
+        Regression summary.
+
+    """
     x_vars = pd.Series(data=model.name_x, name="Independent Variable")
     betas = pd.Series(data=model.betas.ravel(), name="Coefficient")
 
@@ -296,6 +338,19 @@ def get_reg_summary(model, method):
 
 
 def get_spatial_diagnostics(model):
+    """Function to get the spatial diagnostics.
+
+    Parameters:
+    -----------
+    model: spreg.ols.OLS
+        Spatial regression model.
+
+    Returns:
+    --------
+    spatial_diagnostics: pandas.DataFrame
+        Spatial diagnostics.
+
+    """
     lm_error = pd.Series(
         {"Value": model.lm_error[0], "p-value": model.lm_error[1]},
         name="Lagrange Multiplier (error)",
