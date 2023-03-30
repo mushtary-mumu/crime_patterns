@@ -1,16 +1,22 @@
 """Functions plotting results."""
 import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
 from cycler import cycler
-import numpy as np
 from pysal.lib import weights
 from spreg import OLS
 
 
-def plot_hotspots(X_coords, Y_coords, densities, region, crs="EPSG:4326", figsize=(8, 6)):
-
+def plot_hotspots(
+    X_coords,
+    Y_coords,
+    densities,
+    region,
+    crs="EPSG:4326",
+    figsize=(8, 6),
+):
     """Plot hotspots.
-    
+
     Parameters:
     -----------
     X_coords: numpy.ndarray
@@ -27,7 +33,7 @@ def plot_hotspots(X_coords, Y_coords, densities, region, crs="EPSG:4326", figsiz
         Size of the figure.
 
     Returns:
-    --------    
+    --------
     fig: matplotlib.figure.Figure
         Figure containing the plot.
     ax: matplotlib.axes._subplots.AxesSubplot
@@ -36,47 +42,45 @@ def plot_hotspots(X_coords, Y_coords, densities, region, crs="EPSG:4326", figsiz
         Colorbar of the plot.
 
     """
-
     fig, ax = plt.subplots(figsize=figsize)
 
-    contours = plt.contourf(X_coords, Y_coords, densities, 7, cmap='Reds')
+    contours = plt.contourf(X_coords, Y_coords, densities, 7, cmap="Reds")
     cbar = plt.colorbar(contours)
 
     region.to_crs(crs).plot(ax=ax, fc="None")
-    
+
     plt.axis(False)
 
     return fig, ax, cbar
 
-def plot_crime_incidents(X_coords, Y_coords, region, crs="EPSG:4326", figsize=(8, 6)):
 
+def plot_crime_incidents(X_coords, Y_coords, region, crs="EPSG:4326", figsize=(8, 6)):
     """Plot crime incidents.
-    
+
     Parameters:
     -----------
     X_coords: numpy.ndarray
         Array containing the X coordinates of the crime incidents.
-    Y_coords: numpy.ndarray 
+    Y_coords: numpy.ndarray
         Array containing the Y coordinates of the crime incidents.
-    region: geopandas.GeoDataFrame  
+    region: geopandas.GeoDataFrame
         GeoDataFrame containing the region to be plotted.
     crs: str
         Coordinate reference system of the region.
     figsize: tuple
         Size of the figure.
 
-    Returns:   
+    Returns:
     --------
     fig: matplotlib.figure.Figure
         Figure containing the plot.
     ax: matplotlib.axes._subplots.AxesSubplot
         Axes containing the plot.
-            
-    """
 
+    """
     fig, ax = plt.subplots(figsize=figsize)
 
-    ax.scatter(X_coords, Y_coords, s=5, c='saddlebrown', linewidth=0.3, ec='sandybrown')
+    ax.scatter(X_coords, Y_coords, s=5, c="saddlebrown", linewidth=0.3, ec="sandybrown")
     region.to_crs(crs).plot(ax=ax, fc="None", alpha=1, ec="k", linewidth=1)
 
     plt.axis(False)
@@ -85,43 +89,58 @@ def plot_crime_incidents(X_coords, Y_coords, region, crs="EPSG:4326", figsize=(8
 
 
 def plot_dbscan_clusters(data, labels, region, crs="EPSG:4326", figsize=(8, 6)):
-
     """Plot DBSCAN clusters.
-    
+
     Parameters:
     -----------
     data: pandas.DataFrame
         DataFrame containing the data to be plotted.
-    labels: numpy.ndarray   
+    labels: numpy.ndarray
         Array containing the cluster labels.
     region: geopandas.GeoDataFrame
         GeoDataFrame containing the region to be plotted.
-    crs: str    
+    crs: str
         Coordinate reference system of the region.
     figsize: tuple
         Size of the figure.
-    
-    Returns:    
+
+    Returns:
     --------
     fig: matplotlib.figure.Figure
         Figure containing the plot.
     ax: matplotlib.axes._subplots.AxesSubplot
-        Axes containing the plot.       
-    
-    """
+        Axes containing the plot.
 
+    """
     fig, ax = plt.subplots(figsize=figsize)
 
-    ax.set_prop_cycle(cycler('color', ['c', 'm', 'y', 'k']))
+    ax.set_prop_cycle(cycler("color", ["c", "m", "y", "k"]))
 
     for lbl in sorted(np.unique(labels)):
 
         if lbl != -1:
-            ax.scatter(data.loc[labels == lbl, "Longitude"], data.loc[labels == lbl, "Latitude"], s=9, linewidth=0.5, ec='gray', zorder=0, label=f"Cluster {lbl}")
+            ax.scatter(
+                data.loc[labels == lbl, "Longitude"],
+                data.loc[labels == lbl, "Latitude"],
+                s=9,
+                linewidth=0.5,
+                ec="gray",
+                zorder=0,
+                label=f"Cluster {lbl}",
+            )
 
         else:
             ## noise
-            ax.scatter(data.loc[labels == lbl, "Longitude"], data.loc[labels == lbl, "Latitude"], c="lightgray", s=9, linewidth=0.5, ec='gray', zorder=0, label="Noise")
+            ax.scatter(
+                data.loc[labels == lbl, "Longitude"],
+                data.loc[labels == lbl, "Latitude"],
+                c="lightgray",
+                s=9,
+                linewidth=0.5,
+                ec="gray",
+                zorder=0,
+                label="Noise",
+            )
 
     ax.legend()
 
@@ -131,10 +150,16 @@ def plot_dbscan_clusters(data, labels, region, crs="EPSG:4326", figsize=(8, 6)):
 
     return fig, ax
 
-def plot_choropleth_map(region, column_name, figsize=(8, 6), choropleth_kwds=None, **kwargs):
 
+def plot_choropleth_map(
+    region,
+    column_name,
+    figsize=(8, 6),
+    choropleth_kwds=None,
+    **kwargs,
+):
     """Plot regional level data on to a choropleth map.
-    
+
     Parameters:
     -----------
     region: geopandas.GeoDataFrame
@@ -145,7 +170,7 @@ def plot_choropleth_map(region, column_name, figsize=(8, 6), choropleth_kwds=Non
 
     choropleth_kwds: dict
         Keywords used for creating and designing the choropleth map.
-    
+
     kwargs: dict
         Dictionary containing the additional keyword arguments to be passed to the geogpandas.GeoDataFrame.plot function.
 
@@ -158,7 +183,6 @@ def plot_choropleth_map(region, column_name, figsize=(8, 6), choropleth_kwds=Non
         Figure and axes of the plot.
 
     """
-
     fig, ax = plt.subplots(figsize=figsize)
 
     if choropleth_kwds is None:
@@ -177,8 +201,8 @@ def plot_choropleth_map(region, column_name, figsize=(8, 6), choropleth_kwds=Non
 
     return fig, ax
 
-def plot_weights_matrix(region, weights_matrix, figsize=(8, 6)):
 
+def plot_weights_matrix(region, weights_matrix, figsize=(8, 6)):
     """Plot weights matrix.
 
     Parameters:
@@ -194,28 +218,27 @@ def plot_weights_matrix(region, weights_matrix, figsize=(8, 6)):
     --------
     fig, ax: matplotlib.pyplot.figure, matplotlib.pyplot.axes
         Figure and axes of the plot.
-    
-    """
 
+    """
     fig, ax = plt.subplots(figsize=figsize)
 
-    region.plot(ax=ax, edgecolor='grey', facecolor='w')
+    region.plot(ax=ax, edgecolor="grey", facecolor="w")
 
-    weights_matrix.plot(region, 
-                        ax=ax,
-                        edge_kws=dict(color='darkorange', linestyle=':', linewidth=1.3),
-                        node_kws=dict(marker='')
-                    )
+    weights_matrix.plot(
+        region,
+        ax=ax,
+        edge_kws={"color": "darkorange", "linestyle": ":", "linewidth": 1.3},
+        node_kws={"marker": ""},
+    )
 
     ax.set_axis_off()
 
     return fig, ax
 
+
 def plot_moran_scatter(moran, figsize=(8, 6)):
-
-
     """Plot Moran scatter plot.
-    
+
     Parameters:
     -----------
     moran: esda.moran.Moran
@@ -227,17 +250,16 @@ def plot_moran_scatter(moran, figsize=(8, 6)):
     --------
     fig, ax: matplotlib.pyplot.figure, matplotlib.pyplot.axes
         Figure and axes of the plot.
-         
-    """
 
+    """
     fig, ax = plt.subplots(figsize=figsize)
 
-    colors = dict(points="#bababa", fit="#d6604d")
+    colors = {"points": "#bababa", "fit": "#d6604d"}
 
     # set labels
 
     ax.set_title("Moran Scatterplot" + " (" + str(round(moran.I, 2)) + ")")
-    
+
     lag = weights.lag_spatial(moran.w, moran.z)
     fit = OLS(moran.z[:, None], lag[:, None])
     # plot
@@ -251,25 +273,24 @@ def plot_moran_scatter(moran, figsize=(8, 6)):
 
 
 def plot_moran_distribution(moran, figsize=(8, 6)):
-
     """Plot Moran distribution.
-    
+
     Parameters:
     -----------
     moran: esda.moran.Moran
         Moran object containing the data to be plotted.
     figsize: tuple
         Size of the figure.
+
     Returns:
-    --------    
+    --------
     fig, ax: matplotlib.pyplot.figure, matplotlib.pyplot.axes
         Figure and axes of the plot.
-          
-        
+
     """
     fig, ax = plt.subplots(figsize=figsize)
 
-    colors = dict(points="#bababa", fit="#d6604d")
+    colors = {"points": "#bababa", "fit": "#d6604d"}
 
     # plot distribution
     sns.kdeplot(moran.sim, fill=True, color=colors["points"], ax=ax)

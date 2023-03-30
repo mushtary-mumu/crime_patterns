@@ -96,7 +96,7 @@
                 \item Burglaries are centered around the city center.
             \end{itemize}
         \end{column}
-        % Column 2    
+        % Column 2
         \begin{column}{0.5\textwidth}
             \begin{figure}
             \centering
@@ -118,7 +118,7 @@
                 \item Burglaries are centered around the city center.
             \end{itemize}
         \end{column}
-        % Column 2    
+        % Column 2
         \begin{column}{0.5\textwidth}
             \begin{figure}
             \centering
@@ -135,16 +135,16 @@
         % Column 1
         \begin{column}{0.5\textwidth}
             \begin{itemize}
-                \item A spatial weights matrix is the way geographical space is formally encoded into 
+                \item A spatial weights matrix is the way geographical space is formally encoded into
                 a numerical form so it is easy for a computer (or a statistical method) to understand.
-                \item We can define a spatial weights matrix, such as contiguity, distance-based, 
-                or block. We have used Queen contiguity matrix. 
-                \item \textbf{Queen Contiguity Matrix:} For a pair of local authorities in the dataset to be 
-                considered neighbours under this W, they will need to be sharing border or, in other words, “touching” each other to some degree. 
+                \item We can define a spatial weights matrix, such as contiguity, distance-based,
+                or block. We have used Queen contiguity matrix.
+                \item \textbf{Queen Contiguity Matrix:} For a pair of local authorities in the dataset to be
+                considered neighbours under this W, they will need to be sharing border or, in other words, “touching” each other to some degree.
 
             \end{itemize}
         \end{column}
-        % Column 2    
+        % Column 2
         \begin{column}{0.5\textwidth}
             \begin{figure}
             \centering
@@ -155,24 +155,24 @@
     \end{columns}
 \end{frame}
 
-% \textbf{Spatial lag} is a spatially weighted average of the values of a 
+% \textbf{Spatial lag} is a spatially weighted average of the values of a
 %         variable in the neighbourhood of each observation.Once we have weights matrix,
-%          we can look at the spatial lag of the burglary 
+%          we can look at the spatial lag of the burglary
 %         in the Greater London area
 
-%% Slide with two figures and text 
+%% Slide with two figures and text
 \begin{frame}{Spatial Lag of Burglary Incidents}
-    \textbf{Spatial lag} is a spatially weighted average of the values of a 
+    \textbf{Spatial lag} is a spatially weighted average of the values of a
     variable in the neighbourhood of each observation.Once we have weights matrix,
     we can look at the spatial lag of the burglary in the Greater London area
-    
-    %You can see in Figure \ref{fig:images} that I have inserted two images, Figures \ref{fig:nature1} and \ref{fig:nature2}, that I can reference independently. More text, More text, More text, More text, More text,More text ,More text 
+
+    %You can see in Figure \ref{fig:images} that I have inserted two images, Figures \ref{fig:nature1} and \ref{fig:nature2}, that I can reference independently. More text, More text, More text, More text, More text,More text ,More text
     \begin{figure}
         \centering
             \begin{subfigure}[t]{0.4\textwidth}
                 \includegraphics[width=\textwidth]{burglary_ward.png}
                 \caption{No. of Burglary Incidents (2019)}\label{fig:burglary}
-            \end{subfigure} 
+            \end{subfigure}
             \begin{subfigure}[t]{0.4\textwidth}
                 \includegraphics[width=\textwidth]{burglary_ward_lag.png}
                 \caption{Burglary Lag (2019)}\label{fig:burglary_lag}
@@ -181,22 +181,22 @@
     \end{figure}
 \end{frame}
 
-%% Slide with two figures and text 
+%% Slide with two figures and text
 \begin{frame}{Moran's I}
-    
+
     \begin{itemize}
-        \item \textbf{Moran's I:} It is a measure of \textbf{spatial autocorrelation}. 
+        \item \textbf{Moran's I:} It is a measure of \textbf{spatial autocorrelation}.
         \item \textbf{Assumption:} The data is normally distributed.
         \item \textbf{Null hypothesis:} The data is randomly distributed.
         \item \textbf{Alternative hypothesis:} The data is not randomly distributed.
     \end{itemize}
-    %You can see in Figure \ref{fig:images} that I have inserted two images, Figures \ref{fig:nature1} and \ref{fig:nature2}, that I can reference independently. More text, More text, More text, More text, More text,More text ,More text 
+    %You can see in Figure \ref{fig:images} that I have inserted two images, Figures \ref{fig:nature1} and \ref{fig:nature2}, that I can reference independently. More text, More text, More text, More text, More text,More text ,More text
     \begin{figure}
         \centering
             \begin{subfigure}[t]{0.4\textwidth}
                 \includegraphics[width=\textwidth]{moran_scatter.png}
                 \caption{Moran's Plot}\label{fig:moran_scatter}
-            \end{subfigure} 
+            \end{subfigure}
             \begin{subfigure}[t]{0.4\textwidth}
                 \includegraphics[width=\textwidth]{moran_distribution.png}
                 \caption{Distribution after random Sampling}\label{fig:moran_distribution}
@@ -205,9 +205,9 @@
     \end{figure}
 \end{frame}
 
-%% Slide with two figures and text 
+%% Slide with two figures and text
 \begin{frame}{Resource Deprivation in Greater London Area}
-    Resource deprivation scores on a LSOA level as shown in Figure \ref{fig:imd_scores_lsoa} 
+    Resource deprivation scores on a LSOA level as shown in Figure \ref{fig:imd_scores_lsoa}
     have been aggregated to a ward level for subsequent spatial regression analysis
     as shown in Figure \ref{fig:imd_scores_ward}.
     \begin{figure}
@@ -225,9 +225,9 @@
 \end{frame}
 
 
-%% Slide with two figures and text 
+%% Slide with two figures and text
 \begin{frame}{Spatial Regression: Burglaries and Resource Deprivation}
-    Number of burglaries a shown in in Figure \ref{fig:burglary_ward} and resource deprivation as shown 
+    Number of burglaries a shown in in Figure \ref{fig:burglary_ward} and resource deprivation as shown
     in Figure \ref{fig:imd_scores_ward} are used for spatial regression analysis on a ward level.
     \begin{figure}
         \centering
@@ -243,7 +243,7 @@
     \end{figure}
 \end{frame}
 
-                
+
 % Slide with table
 \begin{frame}{Spatial Regression: OLS}
     \small\begin{table}[!h]
@@ -285,7 +285,7 @@
 %         \begin{column}{0.5\textwidth}
 %                 Here I can explain in detail what the figure represents.
 %         \end{column}
-%         % Column 2    
+%         % Column 2
 %         \begin{column}{0.5\textwidth}
 %             \begin{figure}
 %             \centering
@@ -296,9 +296,9 @@
 %     \end{columns}
 % \end{frame}
 
-% %% Slide with two figures and text 
+% %% Slide with two figures and text
 % \begin{frame}{Subfigures in Beamer}
-%     You can see in Figure \ref{fig:images} that I have inserted two images, Figures \ref{fig:nature1} and \ref{fig:nature2}, that I can reference independently. More text, More text, More text, More text, More text,More text ,More text 
+%     You can see in Figure \ref{fig:images} that I have inserted two images, Figures \ref{fig:nature1} and \ref{fig:nature2}, that I can reference independently. More text, More text, More text, More text, More text,More text ,More text
 %     \begin{figure}
 %         \centering
 %             \begin{subfigure}[t]{0.4\textwidth}
@@ -312,7 +312,7 @@
 %         \caption{Two images I want to insert.}\label{fig:images}
 %     \end{figure}
 % \end{frame}
-                
+
 % % Slide with table
 % \begin{frame}{Tables in Beamer}
 %     \small\begin{table}[!h]

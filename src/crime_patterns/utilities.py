@@ -1,22 +1,25 @@
 """Utilities used in various parts of the project."""
 
-import yaml
 import os
-import requests
-from urllib.request import urlopen, urlretrieve
-from io import BytesIO
-from zipfile import ZipFile
-import pandas as pd
 import pickle
+from urllib.request import urlretrieve
+from zipfile import ZipFile
+
+import yaml
+
 
 def read_yaml(path):
-    """Read a YAML file.
+    """Read a YAML file and return the contents as a dictionary.
 
-    Args:
-        path (str or pathlib.Path): Path to file.
+    Parameters:
+    -----------
+    path: str
+        The path to the YAML file.
 
     Returns:
-        dict: The parsed YAML file.
+    --------
+    out: dict
+        The contents of the YAML file as a dictionary.
 
     """
     with open(path) as stream:
@@ -30,20 +33,55 @@ def read_yaml(path):
             raise ValueError(info) from error
     return out
 
-def download_file(url, dest_folder, filename):
 
+def download_file(url, dest_folder, filename):
+    """Function to download a file from a URL.
+
+    Parameters:
+    -----------
+    url: str
+        The URL to download the file from.
+    dest_folder: str
+        The path to the folder where the file should be saved.
+    filename: str
+        The name of the file.
+
+    Returns:
+    --------
+    file_path: str
+        The path to the downloaded file.
+
+    """
     if not os.path.exists(dest_folder):
         os.makedirs(dest_folder)  # create folder if it does not exist
 
-    # filename = url.split('/')[-1].replace(" ", "_")  # be careful with file names
     file_path = os.path.join(dest_folder, filename)
 
-    f = urlretrieve(url=url, filename=file_path)
-    
+    urlretrieve(url=url, filename=file_path)
+
     return file_path
 
+
 def unzip_folder(zip_file, output_dir, subset=False, startswith=None):
-    
+    """Function to unzip a folder.
+
+    Parameters:
+    -----------
+    zip_file: str
+        The path to the zip file.
+    output_dir: str
+        The path to the folder where the zip file should be unzipped.
+    subset: bool
+        Whether to unzip only a subset of the files in the zip file.
+    startswith: str
+        The string that the files to be unzipped should start with.
+
+    Returns:
+    --------
+    output_dir: str
+        The path to the folder where the zip file was unzipped.
+
+    """
     unzipped_folder = os.path.basename(zip_file).strip(".zip")
     output_dir = os.path.join(output_dir, unzipped_folder)
 
@@ -51,27 +89,55 @@ def unzip_folder(zip_file, output_dir, subset=False, startswith=None):
         os.makedirs(output_dir)
 
     with ZipFile(zip_file) as zip_archive:
-        
+
         if subset:
             for file in zip_archive.namelist():
                 if file.startswith(startswith):
                     zip_archive.extract(file, output_dir)
         else:
-            
+
             zip_archive.extractall(output_dir)
 
     return output_dir
 
+
 def save_object_to_pickle(obj, output):
-    
-    with open(output,'wb') as f:
+    """Function to save an object to a pickle file.
+
+    Parameters:
+    -----------
+    obj: object
+        The object to be saved.
+    output: str
+        The path to the pickle file.
+
+    Returns:
+    --------
+    output: str
+        The path to the pickle file.
+
+    """
+    with open(output, "wb") as f:
         pickle.dump(obj, f)
 
     return output
 
+
 def load_object_from_pickle(source):
-    
-    with open(source,'rb') as f:
+    """Function to load an object from a pickle file.
+
+    Parameters:
+    -----------
+    source: str
+        The path to the pickle file.
+
+    Returns:
+    --------
+    obj: object
+        The object loaded from the pickle file.
+
+    """
+    with open(source, "rb") as f:
         obj = pickle.load(f)
-    
+
     return obj
