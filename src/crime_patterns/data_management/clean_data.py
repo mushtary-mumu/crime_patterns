@@ -9,30 +9,6 @@ import geopandas as gpd
 
 logger = logging.getLogger(__name__)
 
-# def clean_data(data, data_info):
-#     """Clean data set.
-
-#     Information on data columns is stored in ``data_management/data_info.yaml``.
-
-#     Args:
-#         data (pandas.DataFrame): The data set.
-#         data_info (dict): Information on data set stored in data_info.yaml. The
-#             following keys can be accessed:
-#             - 'outcome': Name of dependent variable column in data
-#             - 'outcome_numerical': Name to be given to the numerical version of outcome
-#             - 'columns_to_drop': Names of columns that are dropped in data cleaning step
-#             - 'categorical_columns': Names of columns that are converted to categorical
-#             - 'column_rename_mapping': Old and new names of columns to be renamend,
-#                 stored in a dictionary with design: {'old_name': 'new_name'}
-#             - 'url': URL to data set
-
-#     Returns:
-#         pandas.DataFrame: The cleaned data set.
-
-#     """
-#     for cat_col in data_info["categorical_columns"]:
-
-
 def clean_monthly_crime_data(crime_incidence_filepath, crime_type, year, month, columns_to_drop):
 
     """Loads and cleans monthly crime data
@@ -50,7 +26,7 @@ def clean_monthly_crime_data(crime_incidence_filepath, crime_type, year, month, 
         return _clean_monthly_crime_data(
             crime_incidence_filepath, columns_to_drop, crime_type
         )
-    
+
     logger.warning(f"Filepath doesn't exist: {crime_incidence_filepath}")
     logger.warning(f"Returning empty dataframe for year: {year} and month: {month}")
 
@@ -158,3 +134,14 @@ def extract_lsoa_imd_data(imd_data, lsoa, columns_to_keep, ID_column_name="LSOA1
     imd_lsoa = imd_lsoa[columns_to_keep]
 
     return imd_lsoa
+
+def dissolve_gdf_polygons(gdf, dissolve_name, dissolve_key = None):
+    
+    if dissolve_key is None:
+
+        gdf["dissolve_key"] = "dissolve"
+    
+    gdf_dissolved = gdf.dissolve(by="dissolve_key")
+    gdf_dissolved.loc[:, "NAME"]  = dissolve_name
+
+    return gdf_dissolved

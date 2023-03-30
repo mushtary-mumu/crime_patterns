@@ -1,4 +1,4 @@
-\documentclass[11pt, aspectratio=169]{beamer}
+\documentclass[10pt, aspectratio=169]{beamer}
 % \documentclass[11pt,handout]{beamer}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -20,6 +20,19 @@
     sortcites=true,
     backend=biber
 ]{biblatex}
+
+% for figures
+\usepackage{subcaption}
+\usepackage[english]{babel}
+
+\usepackage{graphicx}
+\graphicspath{{../bld/python/figures/}}
+
+% for csv tables
+\usepackage{siunitx,array,booktabs}
+\usepackage{csvsimple}
+\usepackage{adjustbox}
+
 \AtBeginDocument{\toggletrue{blx@useprefix}}
 \AtBeginBibliography{\togglefalse{blx@useprefix}}
 \setlength{\bibitemsep}{1.5ex}
@@ -30,7 +43,7 @@
 \setbeamertemplate{footline}[frame number]
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{frametitle}{\centering\vspace{1ex}\insertframetitle\par}
-
+\setbeamertemplate{caption}[numbered]
 
 \begin{document}
 
@@ -48,46 +61,267 @@
     \note{~}
 \end{frame}
 
-
+%% Slide with citation
 \begin{frame}[t]
-    \frametitle{heading here}
+    \frametitle{Gathering Raw Data}
+    Raw data was gathered from the following sources:
     \begin{itemize}
-        \item<+-> Please cite this template as: \citet{GaudeckerEconProjectTemplates}
-        \item<+-> Example data is taken from \url{https://www.stem.org.uk/resources/elibrary/resource/28452/large-datasets-stats4schools}
+        \item Please cite this template as: \citet{GaudeckerEconProjectTemplates}
+        \item Example data is taken from \url{https://www.stem.org.uk/resources/elibrary/resource/28452/large-datasets-stats4schools}
     \end{itemize}
     \note{~}
 \end{frame}
 
+% \begin{frame}[t]
+%     \begin{figure}[H]
 
+%         \centering
+%         \includegraphics[width=0.5\textwidth]{../bld/python/figures/smoking_by_marital_status}
 
-\begin{frame}[t]
-    \begin{figure}[H]
+%         \caption{\emph{Python:} Model predictions of the smoking probability over the
+%             lifetime. Each colored line represents a case where marital status is fixed to
+%             one of the values present in the data set.}
+%         \label{fig:python-predictions}
 
+%     \end{figure}
+% \end{frame}
+
+%% Slide with a figure and text in two seperate columns
+\begin{frame}{Point Patterns of Burglary Incidents}
+    \begin{columns}
+        % Column 1
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item \textbf{Kernel density estimates:} Counting the number of points in a continuous way.
+                \item Burglaries are centered around the city center.
+            \end{itemize}
+        \end{column}
+        % Column 2    
+        \begin{column}{0.5\textwidth}
+            \begin{figure}
+            \centering
+                \includegraphics[width=1.0\textwidth]{burglary_hotspots.png}
+                \caption{Burglary hotspots within greater London Area.}
+            \end{figure}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+%% Slide with a figure and text in two seperate columns
+\begin{frame}{Spatial Clustering of Burglary Incidents}
+    \begin{columns}
+        % Column 1
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item \textbf{DBSCAN:} density-based clustering
+                \item \textbf{Assumption}: clusters are dense regions in space separated by regions of lower density
+                \item Burglaries are centered around the city center.
+            \end{itemize}
+        \end{column}
+        % Column 2    
+        \begin{column}{0.5\textwidth}
+            \begin{figure}
+            \centering
+                \includegraphics[width=1.0\textwidth]{burglary_clusters.png}
+                \caption{Burglary clusters within greater London Area.}
+            \end{figure}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+%% Slide with a figure and text in two seperate columns
+\begin{frame}{Spatial Weights Matrix}
+    \begin{columns}
+        % Column 1
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item A spatial weights matrix is the way geographical space is formally encoded into 
+                a numerical form so it is easy for a computer (or a statistical method) to understand.
+                \item We can define a spatial weights matrix, such as contiguity, distance-based, 
+                or block. We have used Queen contiguity matrix. 
+                \item \textbf{Queen Contiguity Matrix:} For a pair of local authorities in the dataset to be 
+                considered neighbours under this W, they will need to be sharing border or, in other words, “touching” each other to some degree. 
+
+            \end{itemize}
+        \end{column}
+        % Column 2    
+        \begin{column}{0.5\textwidth}
+            \begin{figure}
+            \centering
+                \includegraphics[width=1.0\textwidth]{weights_matrix_ward.png}
+                \caption{Burglary clusters within greater London Area.}
+            \end{figure}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% \textbf{Spatial lag} is a spatially weighted average of the values of a 
+%         variable in the neighbourhood of each observation.Once we have weights matrix,
+%          we can look at the spatial lag of the burglary 
+%         in the Greater London area
+
+%% Slide with two figures and text 
+\begin{frame}{Spatial Lag of Burglary Incidents}
+    \textbf{Spatial lag} is a spatially weighted average of the values of a 
+    variable in the neighbourhood of each observation.Once we have weights matrix,
+    we can look at the spatial lag of the burglary in the Greater London area
+    
+    %You can see in Figure \ref{fig:images} that I have inserted two images, Figures \ref{fig:nature1} and \ref{fig:nature2}, that I can reference independently. More text, More text, More text, More text, More text,More text ,More text 
+    \begin{figure}
         \centering
-        \includegraphics[width=0.5\textwidth]{../python/figures/smoking_by_marital_status}
+            \begin{subfigure}[t]{0.4\textwidth}
+                \includegraphics[width=\textwidth]{burglary_ward.png}
+                \caption{No. of Burglary Incidents (2019)}\label{fig:burglary}
+            \end{subfigure} 
+            \begin{subfigure}[t]{0.4\textwidth}
+                \includegraphics[width=\textwidth]{burglary_ward_lag.png}
+                \caption{Burglary Lag (2019)}\label{fig:burglary_lag}
+            \end{subfigure}
+        \caption{Burglary incidents and the corresponding lag on a ward level.}\label{fig:lag}
+    \end{figure}
+\end{frame}
 
-        \caption{\emph{Python:} Model predictions of the smoking probability over the
-            lifetime. Each colored line represents a case where marital status is fixed to
-            one of the values present in the data set.}
-        \label{fig:python-predictions}
+%% Slide with two figures and text 
+\begin{frame}{Moran's I}
+    
+    \begin{itemize}
+        \item \textbf{Moran's I:} It is a measure of \textbf{spatial autocorrelation}. 
+        \item \textbf{Assumption:} The data is normally distributed.
+        \item \textbf{Null hypothesis:} The data is randomly distributed.
+        \item \textbf{Alternative hypothesis:} The data is not randomly distributed.
+    \end{itemize}
+    %You can see in Figure \ref{fig:images} that I have inserted two images, Figures \ref{fig:nature1} and \ref{fig:nature2}, that I can reference independently. More text, More text, More text, More text, More text,More text ,More text 
+    \begin{figure}
+        \centering
+            \begin{subfigure}[t]{0.4\textwidth}
+                \includegraphics[width=\textwidth]{moran_scatter.png}
+                \caption{Moran's Plot}\label{fig:moran_scatter}
+            \end{subfigure} 
+            \begin{subfigure}[t]{0.4\textwidth}
+                \includegraphics[width=\textwidth]{moran_distribution.png}
+                \caption{Distribution after random Sampling}\label{fig:moran_distribution}
+            \end{subfigure}
+        \caption{Moran's I and Global Spatial Autocorrelation}\label{fig:moran}
+    \end{figure}
+\end{frame}
 
+%% Slide with two figures and text 
+\begin{frame}{Resource Deprivation in Greater London Area}
+    Resource deprivation scores on a LSOA level as shown in Figure \ref{fig:imd_scores_lsoa} 
+    have been aggregated to a ward level for subsequent spatial regression analysis
+    as shown in Figure \ref{fig:imd_scores_ward}.
+    \begin{figure}
+        \centering
+            \begin{subfigure}[t]{0.4\textwidth}
+                \includegraphics[width=\textwidth]{imd_scores_lsoa.png}
+                \caption{Indices of Multiple Deprivation LSOA level}\label{fig:imd_scores_lsoa}
+            \end{subfigure}
+            \begin{subfigure}[t]{0.4\textwidth}
+                \includegraphics[width=\textwidth]{imd_scores_ward.png}
+                \caption{Indices of Multiple Deprivation on ward level}\label{fig:imd_scores_ward}
+            \end{subfigure}
+        \caption{English Indices of Multiple Deprivation (IMD)}\label{fig:imd}
     \end{figure}
 \end{frame}
 
 
+%% Slide with two figures and text 
+\begin{frame}{Spatial Regression: Burglaries and Resource Deprivation}
+    Number of burglaries a shown in in Figure \ref{fig:burglary_ward} and resource deprivation as shown 
+    in Figure \ref{fig:imd_scores_ward} are used for spatial regression analysis on a ward level.
+    \begin{figure}
+        \centering
+            \begin{subfigure}[t]{0.4\textwidth}
+                \includegraphics[width=\textwidth]{burglary_ward.png}
+                \caption{Indices of Multiple Deprivation LSOA level}\label{fig:burglary_ward}
+            \end{subfigure}
+            \begin{subfigure}[t]{0.4\textwidth}
+                \includegraphics[width=\textwidth]{imd_scores_ward.png}
+                \caption{Indices of Multiple Deprivation on ward level}\label{fig:imd_scores_ward}
+            \end{subfigure}
+        \caption{English Indices of Multiple Deprivation (IMD)}\label{fig:burg_imd}
+    \end{figure}
+\end{frame}
+
+                
+% Slide with table
+\begin{frame}{Spatial Regression: OLS}
+    \small\begin{table}[!h]
+        \input{../bld/python/tables/model_spatial_ols_summary.tex}
+        \caption{\label{tab:ols_summary} Estimation results of OLS regression.}
+    \end{table}
+\end{frame}
+
+% Slide with table
+\begin{frame}{Spatial Regression: ML\_Lag}
+    \small\begin{table}[!h]
+        \input{../bld/python/tables/model_spatial_ml_lag_summary.tex}
+        \caption{\label{tab:ml_lag_summary} Estimation results of ML\_Lag regression.}
+    \end{table}
+\end{frame}
+
+% Slide with table
+\begin{frame}{Spatial Regression: ML\_Error}
+    \small\begin{table}[!h]
+        \input{../bld/python/tables/model_spatial_ml_error_summary.tex}
+        \caption{\label{tab:ml_error_summary} Estimation results of ML\_Error regression.}
+    \end{table}
+\end{frame}
 
 
+% % Slide with table
+% \begin{frame}{Tables in Beamer}
+%     \small\begin{table}[!h]
+%         \input{../bld/python/tables/model_spatial_ml_error_summary.tex}
+%         \caption{\label{tab:python-summary}\emph{Python:} Estimation results of the
+%             linear Logistic regression.}
+%     \end{table}
+% \end{frame}
 
+% %% Slide with a figure and text in two seperate columns
+% \begin{frame}{Figure with other content}
+%     \begin{columns}
+%         % Column 1
+%         \begin{column}{0.5\textwidth}
+%                 Here I can explain in detail what the figure represents.
+%         \end{column}
+%         % Column 2    
+%         \begin{column}{0.5\textwidth}
+%             \begin{figure}
+%             \centering
+%                 \includegraphics[width=1.0\textwidth]{burglary_ward.png}
+%                 \caption{A figure that is next to a certain explanation.}
+%             \end{figure}
+%         \end{column}
+%     \end{columns}
+% \end{frame}
 
-% Print black screen only in presentation mode for finishing up.
-\mode<beamer> {
-    \beamersetaveragebackground{black}
-    \begin{frame}
-        \frametitle{}
-    \end{frame}
+% %% Slide with two figures and text 
+% \begin{frame}{Subfigures in Beamer}
+%     You can see in Figure \ref{fig:images} that I have inserted two images, Figures \ref{fig:nature1} and \ref{fig:nature2}, that I can reference independently. More text, More text, More text, More text, More text,More text ,More text 
+%     \begin{figure}
+%         \centering
+%             \begin{subfigure}[t]{0.4\textwidth}
+%                 \includegraphics[width=\textwidth]{burglary_ward.png}
+%                 \caption{Image of the nature V1.}\label{fig:nature1}
+%             \end{subfigure}
+%             \begin{subfigure}[t]{0.4\textwidth}
+%                 \includegraphics[width=\textwidth]{imd_scores_ward.png}
+%                 \caption{Image of the nature V2.}\label{fig:nature2}
+%             \end{subfigure}
+%         \caption{Two images I want to insert.}\label{fig:images}
+%     \end{figure}
+% \end{frame}
+                
+% % Slide with table
+% \begin{frame}{Tables in Beamer}
+%     \small\begin{table}[!h]
+%         \input{../bld/python/tables/model_spatial_ml_error_summary.tex}
+%         \caption{\label{tab:python-summary}\emph{Python:} Estimation results of the
+%             linear Logistic regression.}
+%     \end{table}
+% \end{frame}
 
-    \beamersetaveragebackground{white}
-}
 
 \begin{frame}[allowframebreaks]
     \frametitle{References}

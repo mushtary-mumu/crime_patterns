@@ -6,6 +6,7 @@ from crime_patterns.data_management.clean_data import (clean_monthly_crime_data,
                                                        convert_region_df_to_gdf,
                                                        aggregate_regional_level_data,
                                                        extract_lsoa_imd_data,
+                                                       dissolve_gdf_polygons,
                                                        )   
 
 # __all__ = [clean_monthly_crime_data, convert_points_df_to_gdf]

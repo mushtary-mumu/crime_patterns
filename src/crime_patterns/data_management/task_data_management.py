@@ -70,18 +70,18 @@ def task_clean_crime_incidences_data(depends_on, produces):
     ## Drop duplicate points
     crime_data_yearly = crime_data_yearly.drop_duplicates(subset=['Longitude', 'Latitude'], keep='first')
 
-    # crime_data_yearly.to_csv(produces["cleaned_csv"], index=False)
-
     ## TODO: consider renaming columns that have more than 10 characters to avoid truncation
     crime_data_yearly_gdf = dm.convert_points_df_to_gdf(df = crime_data_yearly).to_crs(config.CRS)
     
+    ## Dissolve the London wards into one polygon
     london_wards = gpd.read_file(depends_on["london_ward_shp"]).to_crs(config.CRS)
-    london_wards["dissolve_key"] = "dissolve"
-    london_ward_dissolved = london_wards.dissolve(by="dissolve_key")
-    london_ward_dissolved.loc[:, "NAME"]  = "Greater London Area"
-    london_ward_dissolved.to_file(filename=produces["greater_london_area"])
+    london_ward_dissolved = dm.dissolve_gdf_polygons(gdf=london_wards, dissolve_name="Greater London Area")
     
+    ## Filter points that are within Greater London Area only
     crime_data_yearly_gdf = gpd.sjoin(crime_data_yearly_gdf, london_ward_dissolved, how='inner')
+    
+    # Save the data
+    london_ward_dissolved.to_file(filename=produces["greater_london_area"])
     crime_data_yearly_gdf.to_file(filename=produces["cleaned_shp"])
     crime_data_yearly_gdf.to_csv(produces["cleaned_csv"], index=False)
 
