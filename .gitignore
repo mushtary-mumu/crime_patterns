@@ -5,6 +5,10 @@
 *__pycache__
 .mypy_cache
 
+# notebooks
+*ipynb
+*ipynb_checkpoints
+
 # pytask
 .pytask.sqlite3
 .pytask
@@ -14,9 +18,6 @@ bld/
 
 # src
 src/crime_patterns/data/
-src/notebooks/
-src/*ipynb
-src/*ipynb_checkpoints
 
 # latex
 *.aux
@@ -33,3 +34,6 @@ src/*ipynb_checkpoints
 *.pdf
 *.run.xml
 *.synctex.gz
+
+# coverage
+.coverage
