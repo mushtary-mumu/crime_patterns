@@ -95,7 +95,7 @@ def task_spatial_autocorrelation_analysis(depends_on, produces):
     moran = spatial_regression.calculate_morans_I(data=burglary_ward, y_col_name="2019_total", weights_matrix=w_knn_8_ward, transform="R")
     
     ## Save weights matrix and Moran
-    utils.save_object_to_pickle(burglary_ward, produces["weights_matrix_ward"])
+    utils.save_object_to_pickle(w_knn_8_ward, produces["weights_matrix_ward"])
     utils.save_object_to_pickle(moran, produces["moran"])
 
     ## Save spatial lags

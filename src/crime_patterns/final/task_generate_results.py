@@ -107,7 +107,7 @@ def task_plot_point_patterns(depends_on, produces):
     {
     "imd_scores_lsoa": os.path.join(plots_dir, 'imd_scores_lsoa.png'),
     "imd_scores_ward": os.path.join(plots_dir, "imd_scores_ward.png"),
-    "burlary_ward": os.path.join(plots_dir, "burlary_ward.png"),
+    "burglary_ward": os.path.join(plots_dir, "burglary_ward.png"),
     }    
 )
 def task_plot_cleaned_data(depends_on, produces):
@@ -152,7 +152,7 @@ def task_plot_cleaned_data(depends_on, produces):
 
     ax.set_axis_off()
     ax.set_title("No. of Burglaries by Ward")
-    fig.savefig(produces["burlary_ward"], dpi=300, bbox_inches='tight')
+    fig.savefig(produces["burglary_ward"], dpi=300, bbox_inches='tight')
 
 # %%
 @pytask.mark.depends_on(
@@ -160,6 +160,7 @@ def task_plot_cleaned_data(depends_on, produces):
         "scripts": ["plotting.py"],
         "moran": os.path.join(models_dir, "moran.pickle"),
         "weights_matrix_ward": os.path.join(models_dir, "weights_matrix_ward.pickle"),
+        "london_ward": os.path.join(data_raw, "statistical-gis-boundaries-london", "statistical-gis-boundaries-london", "ESRI", "London_Ward.shp"),
         "london_borough": os.path.join(data_raw, "statistical-gis-boundaries-london", "statistical-gis-boundaries-london", "ESRI", "London_Borough_Excluding_MHW.shp"),
         "burglary_ward_lag": os.path.join(results_dir, "burglary_ward_lag.shp")
     }
@@ -169,15 +170,16 @@ def task_plot_cleaned_data(depends_on, produces):
     "moran_scatter": os.path.join(plots_dir, 'moran_scatter.png'),
     "moran_distribution": os.path.join(plots_dir, "moran_distribution.png"),
     "burglary_ward_lag": os.path.join(plots_dir, "burglary_ward_lag.png"),
+    "weights_matrix_ward": os.path.join(plots_dir, "weights_matrix_ward.png")
     }    
 )
-
 def task_plot_spatial_autocorrelation(depends_on, produces):
 
     ## Load Data
     moran = utils.load_object_from_pickle(depends_on["moran"])
     burglary_ward_lag = gpd.read_file(depends_on["burglary_ward_lag"])
     london_borough = gpd.read_file(depends_on["london_borough"])
+    london_ward = gpd.read_file(depends_on["london_ward"])
 
     # Setup figure and axis
     height = 8
@@ -207,6 +209,11 @@ def task_plot_spatial_autocorrelation(depends_on, produces):
     ax.set_title("Burglary 2019 - Spatial Lag")
     ax.set_axis_off()
     fig.savefig(produces["burglary_ward_lag"], dpi=300, bbox_inches='tight')
+
+    ## Plot Spatial Weights Matrix
+    w_knn_8_ward = utils.load_object_from_pickle(depends_on["weights_matrix_ward"])
+    fig, ax = plotting.plot_weights_matrix(london_ward, w_knn_8_ward, figsize=(8,6))
+    fig.savefig(produces["weights_matrix_ward"], dpi=300, bbox_inches='tight')
 
 # %%
 @pytask.mark.depends_on(
