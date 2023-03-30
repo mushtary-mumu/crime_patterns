@@ -287,6 +287,10 @@ def task_plot_spatial_autocorrelation(depends_on, produces):
             tables_dir,
             "model_spatial_ols_summary.tex",
         ),
+        "spat_diag_ols_tex": os.path.join(
+            tables_dir,
+            "spat_diag_ols_tex.tex",
+        ),
         "summary_spatial_ml_lag_tex": os.path.join(
             tables_dir,
             "model_spatial_ml_lag_summary.tex",
@@ -295,6 +299,7 @@ def task_plot_spatial_autocorrelation(depends_on, produces):
             tables_dir,
             "model_spatial_ml_error_summary.tex",
         ),
+    
     },
 )
 def task_create_latex_tables(depends_on, produces):
@@ -312,4 +317,9 @@ def task_create_latex_tables(depends_on, produces):
     )
     spatial_regression.get_reg_summary(model_ml_error, "ML_Error").to_latex(
         produces["summary_spatial_ml_error_tex"],
+    )
+
+    ## Save spatial diagnostics
+    spatial_regression.get_spatial_diagnostics(model_ols).to_latex(
+        produces["spat_diag_ols_tex"]
     )
