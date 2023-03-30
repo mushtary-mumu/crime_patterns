@@ -8,7 +8,9 @@ from crime_patterns.analysis import spatial_regression
 #%%
 def test_calculate_morans_I(mock_crime_polygons, mock_weights_matrix):
     moran = spatial_regression.calculate_morans_I(
-        mock_crime_polygons, "crime_count", mock_weights_matrix,
+        mock_crime_polygons,
+        "crime_count",
+        mock_weights_matrix,
     )
 
     assert np.isclose(moran.I, -0.125, atol=pytest.DESIRED_PRECISION)

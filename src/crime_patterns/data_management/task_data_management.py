@@ -77,7 +77,8 @@ def task_clean_crime_incidences_data(depends_on, produces):
 
     ## Drop duplicate points
     crime_data_yearly = crime_data_yearly.drop_duplicates(
-        subset=["Longitude", "Latitude"], keep="first",
+        subset=["Longitude", "Latitude"],
+        keep="first",
     )
 
     crime_data_yearly_gdf = dm.convert_points_df_to_gdf(df=crime_data_yearly).to_crs(
@@ -87,12 +88,15 @@ def task_clean_crime_incidences_data(depends_on, produces):
     ## Dissolve the London wards into one polygon
     london_wards = gpd.read_file(depends_on["london_ward_shp"]).to_crs(config.CRS)
     london_ward_dissolved = dm.dissolve_gdf_polygons(
-        gdf=london_wards, dissolve_name="Greater London Area",
+        gdf=london_wards,
+        dissolve_name="Greater London Area",
     )
 
     ## Filter points that are within Greater London Area only
     crime_data_yearly_gdf = gpd.sjoin(
-        crime_data_yearly_gdf, london_ward_dissolved, how="inner",
+        crime_data_yearly_gdf,
+        london_ward_dissolved,
+        how="inner",
     )
 
     # Save the data
@@ -207,7 +211,13 @@ def task_prepare_ward_level_IMD_data(depends_on, produces):
     score_col_names = list(
         imd_uk_lsoa.columns[imd_uk_lsoa.columns.str.contains("Score")],
     )
-    columns_to_keep = ["lsoa11cd", "lsoa11nm", "geometry", "TotPop", *list(score_col_names)]
+    columns_to_keep = [
+        "lsoa11cd",
+        "lsoa11nm",
+        "geometry",
+        "TotPop",
+        *list(score_col_names),
+    ]
 
     # TODO: move some input parameters to data_info.yaml
     imd_london_lsoa_2019 = dm.extract_lsoa_imd_data(

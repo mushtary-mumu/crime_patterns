@@ -38,7 +38,11 @@ def evaluate_hotspots(longitudes, latitudes, region, crs="EPSG:4326"):
 
 
 def cluster_crime_incidents_dbscan(
-    latitudes, longitudes, epsilon, min_samples, **kwargs,
+    latitudes,
+    longitudes,
+    epsilon,
+    min_samples,
+    **kwargs,
 ):
     """Function to perform DBSCAN clustering for given parameters."""
     # convert epsilon from km to radians

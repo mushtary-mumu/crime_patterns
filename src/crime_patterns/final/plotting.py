@@ -8,7 +8,12 @@ from spreg import OLS
 
 
 def plot_hotspots(
-    X_coords, Y_coords, densities, region, crs="EPSG:4326", figsize=(8, 6),
+    X_coords,
+    Y_coords,
+    densities,
+    region,
+    crs="EPSG:4326",
+    figsize=(8, 6),
 ):
     """Plot hotspots.
 
@@ -147,7 +152,11 @@ def plot_dbscan_clusters(data, labels, region, crs="EPSG:4326", figsize=(8, 6)):
 
 
 def plot_choropleth_map(
-    region, column_name, figsize=(8, 6), choropleth_kwds=None, **kwargs,
+    region,
+    column_name,
+    figsize=(8, 6),
+    choropleth_kwds=None,
+    **kwargs,
 ):
     """Plot regional level data on to a choropleth map.
 

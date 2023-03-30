@@ -19,11 +19,15 @@ def test_evaluate_hotspots(mock_crime_points, mock_crime_polygons):
     )
 
     assert np.isclose(
-        float(ds.densities.max()), 11.90496, atol=pytest.DESIRED_PRECISION,
+        float(ds.densities.max()),
+        11.90496,
+        atol=pytest.DESIRED_PRECISION,
     )
     assert np.isclose(float(ds.densities.min()), 1.00051, atol=pytest.DESIRED_PRECISION)
     assert np.isclose(
-        float(ds.densities.mean()), 4.53039, atol=pytest.DESIRED_PRECISION,
+        float(ds.densities.mean()),
+        4.53039,
+        atol=pytest.DESIRED_PRECISION,
     )
 
 

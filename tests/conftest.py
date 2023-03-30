@@ -53,11 +53,14 @@ def mock_crime_polygons():
 @pytest.fixture()
 def mock_crime_points():
     def _create_random_clusters_within_bounds(
-        centers, n_features=3, n_samples=300, cluster_std=0.05, random_state=0,
+        centers,
+        n_features=3,
+        n_samples=300,
+        cluster_std=0.05,
+        random_state=0,
     ):
 
         np.random.seed(1)
-
 
         coords, labels_true = make_blobs(
             n_samples=n_samples,

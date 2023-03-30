@@ -35,7 +35,8 @@ if not os.path.isdir(plots_dir):
     {
         "scripts": ["plotting.py"],
         "crime_incidences": os.path.join(
-            data_clean, r"city-of-london-burglaries-2019-cleaned.csv",
+            data_clean,
+            r"city-of-london-burglaries-2019-cleaned.csv",
         ),
         "densities": os.path.join(results_dir, "kernel_density_estimates.nc"),
         "dbscan_clusters": os.path.join(results_dir, "dbscan_clusters.pickle"),
@@ -89,7 +90,11 @@ def task_plot_point_patterns(depends_on, produces):
 
     ## Plot hotspots
     fig, ax, cbar = plotting.plot_hotspots(
-        X_coords, Y_coords, densities, london_borough, figsize=(height, width),
+        X_coords,
+        Y_coords,
+        densities,
+        london_borough,
+        figsize=(height, width),
     )
 
     cbar.ax.get_yaxis().labelpad = 15
@@ -100,7 +105,10 @@ def task_plot_point_patterns(depends_on, produces):
 
     ## Plot clusters
     fig, ax = plotting.plot_dbscan_clusters(
-        crime_incidences, labels, london_borough, figsize=(height, width),
+        crime_incidences,
+        labels,
+        london_borough,
+        figsize=(height, width),
     )
 
     ax.legend(bbox_to_anchor=(0, 0.5))
@@ -268,20 +276,24 @@ def task_plot_spatial_autocorrelation(depends_on, produces):
         "model_spatial_ols": os.path.join(models_dir, "model_spatial_ols.pickle"),
         "model_spatial_ml_lag": os.path.join(models_dir, "model_spatial_ml_lag.pickle"),
         "model_spatial_ml_error": os.path.join(
-            models_dir, "model_spatial_ml_error.pickle",
+            models_dir,
+            "model_spatial_ml_error.pickle",
         ),
     },
 )
 @pytask.mark.produces(
     {
         "summary_spatial_ols_tex": os.path.join(
-            tables_dir, "model_spatial_ols_summary.tex",
+            tables_dir,
+            "model_spatial_ols_summary.tex",
         ),
         "summary_spatial_ml_lag_tex": os.path.join(
-            tables_dir, "model_spatial_ml_lag_summary.tex",
+            tables_dir,
+            "model_spatial_ml_lag_summary.tex",
         ),
         "summary_spatial_ml_error_tex": os.path.join(
-            tables_dir, "model_spatial_ml_error_summary.tex",
+            tables_dir,
+            "model_spatial_ml_error_summary.tex",
         ),
     },
 )

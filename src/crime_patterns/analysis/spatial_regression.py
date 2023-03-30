@@ -46,7 +46,11 @@ def create_weights_matrix(data, method="queen", k=5, **kwargs):
 
 
 def calculate_spatial_lag(
-    data, y_col_name, weights_matrix, ID_column_name, transform="R",
+    data,
+    y_col_name,
+    weights_matrix,
+    ID_column_name,
+    transform="R",
 ):
     """Calculate spatial lag.
 
@@ -85,7 +89,11 @@ def calculate_spatial_lag(
 
 
 def calculate_morans_I(
-    data, y_col_name, weights_matrix, permutations=999, transform="R",
+    data,
+    y_col_name,
+    weights_matrix,
+    permutations=999,
+    transform="R",
 ):
     """Calculate Moran's I.
 
@@ -114,7 +122,9 @@ def calculate_morans_I(
     weights_matrix.transform = transform
 
     moran = esda.moran.Moran(
-        data[y_col_name], weights_matrix, permutations=permutations,
+        data[y_col_name],
+        weights_matrix,
+        permutations=permutations,
     )
 
     return moran
@@ -131,7 +141,8 @@ def prepare_data_for_spatial_regression(
 ):
 
     db = crime_data[[ID_col_name, crime_col_name]].merge(
-        explanatory_data.drop("geometry", axis=1), on=ID_col_name,
+        explanatory_data.drop("geometry", axis=1),
+        on=ID_col_name,
     )
     db = db.merge(population[[ID_col_name, population_col_name]], on=ID_col_name)
     db[f"{crime_col_name}_rate"] = db[crime_col_name] / db[population_col_name]
@@ -301,11 +312,13 @@ def get_spatial_diagnostics(model):
     )
 
     rlm_lag = pd.Series(
-        {"Value": model.rlm_lag[0], "p-value": model.rlm_lag[1]}, name="Robust LM (lag)",
+        {"Value": model.rlm_lag[0], "p-value": model.rlm_lag[1]},
+        name="Robust LM (lag)",
     )
 
     morans_i = pd.Series(
-        {"Value": model.moran_res[0], "p-value": model.moran_res[2]}, name="Moran's I",
+        {"Value": model.moran_res[0], "p-value": model.moran_res[2]},
+        name="Moran's I",
     )
 
     return pd.concat([lm_error, lm_lag, rlm_error, rlm_lag, morans_i], axis=1)

@@ -35,7 +35,8 @@ if not os.path.isdir(plots_dir):
     {
         "scripts": ["point_patterns.py"],
         "crime_incidences": os.path.join(
-            data_clean, r"city-of-london-burglaries-2019-cleaned.csv",
+            data_clean,
+            r"city-of-london-burglaries-2019-cleaned.csv",
         ),
         "london_greater_area": os.path.join(data_clean, "Greater_London_Area.shp"),
     },
@@ -64,7 +65,10 @@ def task_point_patterns_analysis(depends_on, produces):
     )
 
     densities.to_netcdf(
-        produces["densities"], mode="w", format="NETCDF4", engine="netcdf4",
+        produces["densities"],
+        mode="w",
+        format="NETCDF4",
+        engine="netcdf4",
     )
     utils.save_object_to_pickle(dbscan_clusters, produces["dbscan_clusters"])
 
@@ -76,7 +80,8 @@ def task_point_patterns_analysis(depends_on, produces):
     {
         "scripts": ["spatial_regression.py"],
         "burglary_ward_shp_path": os.path.join(
-            data_clean, r"MPS_Ward_Level_burglary_2019.shp",
+            data_clean,
+            r"MPS_Ward_Level_burglary_2019.shp",
         ),
     },
 )
@@ -93,7 +98,9 @@ def task_spatial_autocorrelation_analysis(depends_on, produces):
 
     ## Calculate weights matrix
     w_knn_8_ward = spatial_regression.create_weights_matrix(
-        burglary_ward, method="knn", k=8,
+        burglary_ward,
+        method="knn",
+        k=8,
     )
 
     ## Calculate spatial lag
@@ -125,7 +132,8 @@ def task_spatial_autocorrelation_analysis(depends_on, produces):
         "scripts": ["spatial_regression.py"],
         "imd_ward_shp_path": os.path.join(data_clean, r"IMD_Ward_2019.shp"),
         "burglary_ward_shp_path": os.path.join(
-            data_clean, r"MPS_Ward_Level_burglary_2019.shp",
+            data_clean,
+            r"MPS_Ward_Level_burglary_2019.shp",
         ),
         "pop_ward_shp_path": os.path.join(data_clean, r"Population_Ward_2019.shp"),
     },
@@ -135,16 +143,20 @@ def task_spatial_autocorrelation_analysis(depends_on, produces):
         "model_spatial_ols": os.path.join(models_dir, "model_spatial_ols.pickle"),
         "model_spatial_ml_lag": os.path.join(models_dir, "model_spatial_ml_lag.pickle"),
         "model_spatial_ml_error": os.path.join(
-            models_dir, "model_spatial_ml_error.pickle",
+            models_dir,
+            "model_spatial_ml_error.pickle",
         ),
         "summary_spatial_ols_csv": os.path.join(
-            results_dir, "model_spatial_ols_summary.csv",
+            results_dir,
+            "model_spatial_ols_summary.csv",
         ),
         "summary_spatial_ml_lag_csv": os.path.join(
-            results_dir, "model_spatial_ml_lag_summary.csv",
+            results_dir,
+            "model_spatial_ml_lag_summary.csv",
         ),
         "summary_spatial_ml_error_csv": os.path.join(
-            results_dir, "model_spatial_ml_error_summary.csv",
+            results_dir,
+            "model_spatial_ml_error_summary.csv",
         ),
     },
 )
@@ -177,13 +189,22 @@ def task_spatial_regression_analysis(depends_on, produces):
 
     ## Run spatial regression
     model_ols = spatial_regression.perform_spatial_regression(
-        db, dependent_variable_name, independent_variable_names, method="OLS",
+        db,
+        dependent_variable_name,
+        independent_variable_names,
+        method="OLS",
     )
     model_ml_lag = spatial_regression.perform_spatial_regression(
-        db, dependent_variable_name, independent_variable_names, method="ML_Lag",
+        db,
+        dependent_variable_name,
+        independent_variable_names,
+        method="ML_Lag",
     )
     model_ml_error = spatial_regression.perform_spatial_regression(
-        db, dependent_variable_name, independent_variable_names, method="ML_Error",
+        db,
+        dependent_variable_name,
+        independent_variable_names,
+        method="ML_Error",
     )
 
     ## Save models

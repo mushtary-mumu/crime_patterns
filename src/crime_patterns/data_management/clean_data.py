@@ -11,7 +11,11 @@ logger = logging.getLogger(__name__)
 
 
 def clean_monthly_crime_data(
-    crime_incidence_filepath, crime_type, year, month, columns_to_drop,
+    crime_incidence_filepath,
+    crime_type,
+    year,
+    month,
+    columns_to_drop,
 ):
     """Loads and cleans monthly crime data.
 
@@ -27,7 +31,9 @@ def clean_monthly_crime_data(
     """
     if isfile(crime_incidence_filepath):
         return _clean_monthly_crime_data(
-            crime_incidence_filepath, columns_to_drop, crime_type,
+            crime_incidence_filepath,
+            columns_to_drop,
+            crime_type,
         )
 
     logger.warning(f"Filepath doesn't exist: {crime_incidence_filepath}")
@@ -78,7 +84,9 @@ def convert_points_df_to_gdf(
     ), f"{latitude_column_name}, not found in Dataframe columns."
 
     geometry = gpd.points_from_xy(
-        x=df[longitude_column_name], y=df[latitude_column_name], crs=crs,
+        x=df[longitude_column_name],
+        y=df[latitude_column_name],
+        crs=crs,
     )
 
     return gpd.GeoDataFrame(data=df, geometry=geometry)
@@ -129,7 +137,11 @@ def convert_region_df_to_gdf(df, region_gdf, common_column_mapper, crs=None):
 
 
 def aggregate_regional_level_data(
-    lower_level_gdf, upper_level_gdf, ID_column_name, crs, weights_dict=None,
+    lower_level_gdf,
+    upper_level_gdf,
+    ID_column_name,
+    crs,
+    weights_dict=None,
 ):
 
     if lower_level_gdf.crs != upper_level_gdf.crs:
@@ -168,7 +180,9 @@ def aggregate_regional_level_data(
 
     # adding the geometry column back
     agg_gdf = upper_level_gdf[[ID_column_name, "geometry"]].merge(
-        agg_gdf, on=ID_column_name, how="outer",
+        agg_gdf,
+        on=ID_column_name,
+        how="outer",
     )
 
     return agg_gdf
