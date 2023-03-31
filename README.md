@@ -57,8 +57,8 @@ To run this project on a local machine:
   create and activate the environment by typing:
 
 ```console
-conda env create -f environment.yml
-conda activate crime_patterns
+mamba env create -f environment.yml
+mamba activate crime_patterns
 ```
 
 - To generate the output files that will be stored in `bld` folder, type `pytask` in the
