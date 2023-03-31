@@ -24,12 +24,6 @@ models_dir = bld / "python" / "models"
 plots_dir = bld / "python" / "figures"
 tables_dir = bld / "python" / "tables"
 
-if not os.path.isdir(plots_dir):
-    os.makedirs(plots_dir)
-
-if not os.path.isdir(tables_dir):
-    os.makedirs(tables_dir)
-
 #%%
 @pytask.mark.depends_on(
     {
@@ -57,6 +51,7 @@ if not os.path.isdir(tables_dir):
     },
 )
 def task_plot_point_patterns(depends_on, produces):
+    """Task for plotting the point patterns analysis results."""
     ## Load data
     crime_incidences = pd.read_csv(depends_on["crime_incidences"])
     london_borough = gpd.read_file(depends_on["london_borough"])
@@ -140,6 +135,7 @@ def task_plot_point_patterns(depends_on, produces):
     },
 )
 def task_plot_cleaned_data(depends_on, produces):
+    """Task for plotting the cleaned data."""
     ## Load Data
     london_borough = gpd.read_file(depends_on["london_borough"])
 
@@ -230,6 +226,7 @@ def task_plot_cleaned_data(depends_on, produces):
     },
 )
 def task_plot_spatial_autocorrelation(depends_on, produces):
+    """Task for plotting the spatial autocorrelation."""
     ## Load Data
     moran = utils.load_object_from_pickle(depends_on["moran"])
     burglary_ward_lag = gpd.read_file(depends_on["burglary_ward_lag"])
@@ -310,6 +307,7 @@ def task_plot_spatial_autocorrelation(depends_on, produces):
     },
 )
 def task_create_latex_tables(depends_on, produces):
+    """Task for creating latex tables."""
     ## Load models
     model_ols = utils.load_object_from_pickle(depends_on["model_spatial_ols"])
     model_ml_lag = utils.load_object_from_pickle(depends_on["model_spatial_ml_lag"])

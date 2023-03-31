@@ -54,15 +54,20 @@ The project environment includes all the dependencies needed to run the project.
 To run this project on a local machine:
 
 - after cloning the repo, open a terminal in the root directory of the project and
-  create and activate the environment by typing:
+  create the environment by typing:
 
 ```console
 mamba env create -f environment.yml
+```
+
+- activate the environment by typing:
+
+```console
 mamba activate crime_patterns
 ```
 
-- To generate the output files that will be stored in `bld` folder, type `pytask` in the
-  root directory of your terminal.
+- To generate the output files that will be stored in `bld/` folder, type `pytask` in
+  the root directory of your terminal.
 
 ```console
 pytask
@@ -71,8 +76,8 @@ pytask
 > **Note** When pytask is run for the first time, it will download and unzip a decent
 > amount of raw data files onto the local machine. This will take a while, but will only
 > happen once. Subsequent runs of pytask will be much faster. The downloaded raw data
-> files are stored in `src/crime_patterns/data` folder. It is therefore recommended to
-> have at least 5 GB of free space on the local machine.
+> files are stored in `src/crime_patterns/data/` folder. It is therefore recommended to
+> have at least 6 - 7 GB of free space on the local machine.
 
 - To run the tests stored in the `tests` folder, type `pytest` in the root directory of
   your terminal.
@@ -91,9 +96,8 @@ through the folders, the workflow is decomposed as follows:
 - `src/crime_patterns/analysis` contains code for all the analysis mentioned above,
   intuitively named in separte files.
 - `src/crime_patterns/final` includes code to generate final tables and figures.
-- `src/crime_patterns/paper` contains the tasks to generate the final project
+- `paper/` contains the LaTeX files and the tasks to generate the final project
   presentation.
-- `paper/` contains the LaTeX files corresponding to the final project presentation.
 
 <!--- - `documentation` generates pdf and html files for the documentaion of the project code. --->
 

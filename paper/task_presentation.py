@@ -17,7 +17,7 @@ models_dir = bld / "python" / "models"
 plots_dir = bld / "python" / "figures"
 tables_dir = bld / "python" / "tables"
 
-documents = ["crime_patterns_pres"]  # , "crime_patterns"]
+documents = ["crime_patterns_pres"]
 
 for document in documents:
 

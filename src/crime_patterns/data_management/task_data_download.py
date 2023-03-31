@@ -18,12 +18,6 @@ data_raw = src / "data"
 data_clean = bld / "python" / "data"
 downloads_dir = src / "data" / "downloads"
 
-if not os.path.isdir(data_raw):
-    os.makedirs(data_raw)
-
-if not os.path.isdir(downloads_dir):
-    os.makedirs(downloads_dir)
-
 data_info = utils.read_yaml(src / "data_management" / "data_info.yaml")
 year = data_info["crime_year"]
 
@@ -67,7 +61,7 @@ crime_data_filepaths = (
     },
 )
 def task_data_download(produces):
-    """Clean the data (Python version)."""
+    """Download raw data."""
     logger.warn("This task downloads large data files with approx ~ 1.7 GB filesize.")
 
     for url_key in data_info["urls"]:
@@ -120,6 +114,7 @@ def task_data_download(produces):
     },
 )
 def task_data_unzip(depends_on, produces):
+    """Unzip downloaded data."""
     logger.warn("This task unzips large data files with approx ~ 2.5 GB filesize.")
 
     for key in depends_on:
@@ -164,6 +159,7 @@ def task_data_unzip(depends_on, produces):
     },
 )
 def task_data_move(depends_on, produces):
+    """Move and reorganize data files in folders."""
     ## move individual files and organize into folders
     shutil.copy2(src=depends_on["imd_lsoa"], dst=os.path.dirname(produces["imd_lsoa"]))
 
@@ -171,8 +167,3 @@ def task_data_move(depends_on, produces):
         src=depends_on["lsoa_level_crime"],
         dst=os.path.dirname(produces["lsoa_level_crime"]),
     )
-
-    ## clear up downloads folder
-
-
-# %%

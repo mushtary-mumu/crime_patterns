@@ -25,12 +25,6 @@ shapefiles_dir = (
     "ESRI",
 )
 
-if not os.path.isdir(models_dir):
-    os.makedirs(models_dir)
-
-if not os.path.isdir(results_dir):
-    os.makedirs(results_dir)
-
 #%%
 @pytask.mark.depends_on(
     {
@@ -49,6 +43,7 @@ if not os.path.isdir(results_dir):
     },
 )
 def task_point_patterns_analysis(depends_on, produces):
+    """Perform point pattern analysis."""
     ## Load data
     london_greater_area = gpd.read_file(depends_on["london_greater_area"])
     crime_incidences = pd.read_csv(depends_on["crime_incidences"])
@@ -94,6 +89,7 @@ def task_point_patterns_analysis(depends_on, produces):
     },
 )
 def task_spatial_autocorrelation_analysis(depends_on, produces):
+    """Perform spatial autocorrelation analysis."""
     ## Load data
     burglary_ward = gpd.read_file(depends_on["burglary_ward_shp_path"])
 
@@ -162,6 +158,7 @@ def task_spatial_autocorrelation_analysis(depends_on, produces):
     },
 )
 def task_spatial_regression_analysis(depends_on, produces):
+    """Perform spatial regression analysis."""
     ## Load data
     imd_ward = gpd.read_file(depends_on["imd_ward_shp_path"])
     burglary_ward = gpd.read_file(depends_on["burglary_ward_shp_path"])

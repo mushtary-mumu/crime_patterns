@@ -16,9 +16,6 @@ bld = config.BLD
 data_raw = src / "data"
 data_clean = bld / "python" / "data"
 
-if not os.path.isdir(data_clean):
-    os.makedirs(data_clean)
-
 data_info = utils.read_yaml(src / "data_management" / "data_info.yaml")
 year = data_info["crime_year"]
 
@@ -65,7 +62,7 @@ crime_data_filepaths = (
     },
 )
 def task_clean_crime_incidences_data(depends_on, produces):
-    """Clean the data (Python version)."""
+    """Clean and combine monthly crime incidences data to yearly datafile."""
     crime_data_monthly = [
         dm.clean_monthly_crime_data(
             crime_incidence_filepath=depends_on["crime_data_filepaths"][key],
@@ -135,6 +132,7 @@ def task_clean_crime_incidences_data(depends_on, produces):
     },
 )
 def task_prepare_ward_level_crime_data(depends_on, produces):
+    """Prepare ward level crime data from LSOA level crime data."""
     common_column_mapper = {"df": "LSOA Code", "gdf": "LSOA11CD"}
 
     ## load
@@ -142,7 +140,6 @@ def task_prepare_ward_level_crime_data(depends_on, produces):
     london_wards = gpd.read_file(depends_on["london_ward_shp"])
     lsoa_crime_data = pd.read_csv(depends_on["lsoa_crime_data"])
 
-    # TODO: move some input parameters to data_info.yaml
     mps_lsoa_burglary_2019 = dm.clean_regional_burglary_data(
         df=lsoa_crime_data,
         columns_to_keep=[
@@ -203,9 +200,7 @@ def task_prepare_ward_level_crime_data(depends_on, produces):
     },
 )
 def task_prepare_ward_level_IMD_data(depends_on, produces):
-    # common_column_mapper = {"df": "LSOA Code",
-    #                         "gdf": "LSOA11CD"}
-
+    """Prepare ward level IMD data from LSOA level IMD data."""
     ## load
     london_lsoa = gpd.read_file(depends_on["london_lsoa_shp"])
     london_wards = gpd.read_file(depends_on["london_ward_shp"])
@@ -222,7 +217,6 @@ def task_prepare_ward_level_IMD_data(depends_on, produces):
         *list(score_col_names),
     ]
 
-    # TODO: move some input parameters to data_info.yaml
     imd_london_lsoa_2019 = dm.extract_lsoa_imd_data(
         imd_data=imd_uk_lsoa,
         lsoa=london_lsoa,
@@ -249,6 +243,3 @@ def task_prepare_ward_level_IMD_data(depends_on, produces):
     imd_london_lsoa_2019.to_file(produces["lsoa_imd_data_cleaned"])
     imd_london_ward_2019.to_file(produces["ward_imd_data_cleaned"])
     pop_london_ward_2019.to_file(produces["ward_pop_data_cleaned"])
-
-
-# %%
