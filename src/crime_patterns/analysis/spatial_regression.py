@@ -349,6 +349,9 @@ def get_spatial_diagnostics(model):
         Spatial diagnostics.
 
     """
+
+    assert type(model) == OLS, "Invalid model type."
+
     lm_error = pd.Series(
         {"Value": model.lm_error[0], "p-value": model.lm_error[1]},
         name="Lagrange Multiplier (error)",
@@ -375,3 +378,45 @@ def get_spatial_diagnostics(model):
     )
 
     return pd.concat([lm_error, lm_lag, rlm_error, rlm_lag, morans_i], axis=1)
+
+def get_model_stats(model):
+    """Function to get the model statistics.
+
+    Parameters:
+    -----------
+    model: spreg.ols.ML_Lag or spreg.ols.ML_Error
+        Spatial regression model.
+
+    Returns:
+    --------
+    model_stats_table: pandas.DataFrame
+        Model statistics table. Contains the following metrics: Pseudo R-squared,  Spatial Pseudo R-squared, Log likelihood, Schwarz criterion. 
+
+    """
+
+    assert type(model) in [ML_Lag, ML_Error], "Invalid model type."
+
+    stats_dict = {
+            "Model": [
+                model.title
+            ],
+            "Pseudo R-squared": [
+                model.pr2
+            ],
+            "Spatial Pseudo R-squared": [
+                model.pr2
+            ],
+            "Log likelihood": [
+                model.logll
+            ],
+            "Schwarz criterion": [
+                model.schwarz
+            ],  # Lower the better
+        }
+    stats_table = pd.DataFrame(
+        data=stats_dict
+    ).T
+
+    stats_table.columns = stats_table.loc["Model", :].values
+
+    return stats_table.drop(index="Model")
