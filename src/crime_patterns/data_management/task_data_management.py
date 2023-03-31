@@ -16,6 +16,9 @@ bld = config.BLD
 data_raw = src / "data"
 data_clean = bld / "python" / "data"
 
+if not os.path.isdir(data_clean):
+    os.makedirs(data_clean)
+
 data_info = utils.read_yaml(src / "data_management" / "data_info.yaml")
 year = data_info["crime_year"]
 

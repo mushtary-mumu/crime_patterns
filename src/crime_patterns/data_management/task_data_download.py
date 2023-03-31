@@ -111,6 +111,11 @@ def task_data_download(produces):
             / data_info["data_raw_dirs"]["statistical_gis_boundaries_london"]
             / "ESRI"
             / "London_Ward.shp",
+            data_raw
+            / data_info["data_raw_dirs"]["statistical_gis_boundaries_london"]
+            / data_info["data_raw_dirs"]["statistical_gis_boundaries_london"]
+            / "ESRI"
+            / "London_Borough_Excluding_MHW.shp",
         ],
     },
 )

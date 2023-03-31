@@ -17,7 +17,7 @@ data_raw = src / "data"
 data_clean = bld / "python" / "data"
 models_dir = bld / "python" / "models"
 results_dir = bld / "python" / "results"
-plots_dir = bld / "python" / "figures"
+
 shapefiles_dir = (
     data_raw
     / "statistical-gis-boundaries-london"
@@ -25,11 +25,12 @@ shapefiles_dir = (
     "ESRI",
 )
 
+if not os.path.isdir(models_dir):
+    os.makedirs(models_dir)
+
 if not os.path.isdir(results_dir):
     os.makedirs(results_dir)
 
-if not os.path.isdir(plots_dir):
-    os.makedirs(plots_dir)
 #%%
 @pytask.mark.depends_on(
     {

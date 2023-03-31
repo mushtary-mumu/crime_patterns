@@ -24,11 +24,11 @@ models_dir = bld / "python" / "models"
 plots_dir = bld / "python" / "figures"
 tables_dir = bld / "python" / "tables"
 
-if not os.path.isdir(results_dir):
-    os.makedirs(results_dir)
-
 if not os.path.isdir(plots_dir):
     os.makedirs(plots_dir)
+
+if not os.path.isdir(tables_dir):
+    os.makedirs(tables_dir)
 
 #%%
 @pytask.mark.depends_on(
@@ -39,7 +39,7 @@ if not os.path.isdir(plots_dir):
             r"city-of-london-burglaries-2019-cleaned.csv",
         ),
         "densities": os.path.join(results_dir, "kernel_density_estimates.nc"),
-        "dbscan_clusters": os.path.join(results_dir, "dbscan_clusters.pickle"),
+        "dbscan_clusters": os.path.join(models_dir, "dbscan_clusters.pickle"),
         "london_borough": os.path.join(
             data_raw,
             "statistical-gis-boundaries-london",
