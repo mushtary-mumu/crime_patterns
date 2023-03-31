@@ -158,9 +158,9 @@
 \begin{frame}{Moran Plot}
     \begin{itemize}
         \item \textbf{} The plot displays a positive relationship between the standardized rate of burglary and its spatial lag.
-     
+
     \end{itemize}
-    
+
     %You can see in Figure \ref{fig:images} that I have inserted two images, Figures \ref{fig:nature1} and \ref{fig:nature2}, that I can reference independently. More text, More text, More text, More text, More text,More text ,More text
     \begin{figure}
         \centering
@@ -181,25 +181,25 @@
         \item Moran plot is a way of visualizing a spatial dataset to explore the nature and strength of spatial autocorrelation.
         \item This is associated with the presence of \textbf{positive spatial autocorrelation:} similar values tend to be located close to each other. This means that the \textbf{overall trend} is for high values to be close to other high values, and for low values to be surrounded by other low values.
     \end{itemize}
-    
+
 \end{frame}
 
 
 \begin{frame}{Moran's I and Spatial Autocorrelation}
     \begin{itemize}
-        
+
         \item \textbf{Moran's I} is a measure of \textbf{spatial autocorrelation}.
         \item From the figure \ref{fig:moran_scatter}, we can see that the value of the Moran's I is 0.5, which is a positive value.
-        \item With the small p-value associated with the Moran's I, we can conclude that the map displays 
+        \item With the small p-value associated with the Moran's I, we can conclude that the map displays
         more spatial pattern that we would expect if the values had been randomly allocated to a particular location.
         \item \textbf{Global Spatial Autocorrelation} relates to the overall geographical pattern present in the data.
-        \item Global autocorrelation analysis shows us that observations do seem positively correlated over space. 
+        \item Global autocorrelation analysis shows us that observations do seem positively correlated over space.
 
 
     \end{itemize}
-   
+
     %You can see in Figure \ref{fig:images} that I have inserted two images, Figures \ref{fig:nature1} and \ref{fig:nature2}, that I can reference independently. More text, More text, More text, More text, More text,More text ,More text
-   
+
 \end{frame}
 
 %% Slide with two figures and text
@@ -242,7 +242,7 @@
 
 % Slide with table
 \begin{frame}{Spatial Regression}
-    
+
     \small\begin{table}[!h]
         \input{../bld/python/tables/model_spatial_ols_summary.tex}
         \caption{\label{tab:ols_summary} Estimation results of regression.}
@@ -251,7 +251,7 @@
         \item \textbf{Independent variables:} Resource deprivation scores.
         \item \textbf{Dependent Variable:} Burglary rate in GreaterLondon Area .
         \item \textbf{Null hypothesis:} No Spatial autocorrelation in the residuals.
-        \item \textbf{Alternative hypothesis:} There is spatial autocorrelation in the residuals. 
+        \item \textbf{Alternative hypothesis:} There is spatial autocorrelation in the residuals.
         \item \textbf{Conclusion:} The null hypothesis is rejected. There is spatial autocorrelation in the residuals.
     \end{itemize}
 \end{frame}
@@ -262,27 +262,27 @@
     \begin{adjustbox}{max width=\textwidth, keepaspectratio, rotate=0, caption={Spatial Diagnostic Tests}, float=table}
         \input{../bld/python/tables/spat_diag_ols_tex.tex}
     \end{adjustbox}\label{tab:spat_diag}
-    
+
     \begin{itemize}
         \item \textbf{Lagrange Multiplier Tests} suggests that a spatial error or spatial lag model would improve the fit of our model.
-        \item We have got significant results for both LM error and LM lag. This shows that we should consider the spatial correlation. 
+        \item We have got significant results for both LM error and LM lag. This shows that we should consider the spatial correlation.
         \item However, according to the Robust LM and Robust LM(error) values, we should only consider the Spatial Error model as Robust LM is not significant anymore.
-        \item We will continue with the spatial error and spatial lag models even though the error model is more than likely the correct path. 
+        \item We will continue with the spatial error and spatial lag models even though the error model is more than likely the correct path.
     \end{itemize}
-    
+
 \end{frame}
 
 \begin{frame}{Spatial Regression: ML\_Lag}
-    \begin{equation} 
+    \begin{equation}
         y_i=X_i \beta+\lambda w_i \epsilon_i+u_i
     \end{equation}
     \begin{itemize}
-         
-        \item \textbf{Spatial Lag Model} is a global model where the dependent variable among where neighbors influence the dependent variable. 
+
+        \item \textbf{Spatial Lag Model} is a global model where the dependent variable among where neighbors influence the dependent variable.
         \item \textbf{}For Example, If burglary incidence is higher in the neighborhood of the City Centre of London, its highly likely to have high burglary incidence in the city center of London. Therefore, there is a feedback loop that occurs where affects on our neighbor(s) y affects our y and our neighbor(s) y variable.
         \item \textbf{Null hypothesis:} Spatial dependencies are not captured by the spatial lag Wy in the endogenous variable Y
         \item \textbf{Alternative hypothesis:} Spatial dependencies are captured by the spatial lag Wy in the endogenous variable Y
-        
+
     \end{itemize}
 \end{frame}
 
@@ -293,27 +293,27 @@
         \caption{\label{tab:ml_lag_summary} Estimation results of ML\_Lag regression.}
     \end{table}
     \begin{itemize}
-         
-        \item \textbf{W\_burglaryRate2019} is a spatially lagged y multiplier. 
+
+        \item \textbf{W\_burglaryRate2019} is a spatially lagged y multiplier.
         \item \textbf{} Coefficient is 0.84 (with a significant p-value)
-        \item \textbf{} Burglary incidence tends to higher in an area when it is higher in the neighborhood with some spillover effects.  
-        
+        \item \textbf{} Burglary incidence tends to higher in an area when it is higher in the neighborhood with some spillover effects.
+
     \end{itemize}
 \end{frame}
 
 \begin{frame}{Spatial Regression: ML\_Error}
 
-    \begin{equation} 
+    \begin{equation}
         y_i=X_i \beta+\lambda w_i \epsilon_i+u_i
     \end{equation}
-    
+
     \begin{itemize}
-         
+
         \item \textbf{Spatial Error Model} does not include lagged dependent or independent variables, but instead includes a function of our unexplained error and that of our neighbors.
         \item \textbf{}Higher than expected residual values suggest a missing explanatory variable that is spatially correlated. In this analysis, Lambda is the error multiplier.
         \item \textbf{Null hypothesis:} There is no dependency of error values of an area with errors in other areas associated with it
         \item \textbf{Alternative hypothesis:} There is dependency of error values of an area with errors in other areas associated with it
-        
+
     \end{itemize}
 \end{frame}
 
@@ -324,12 +324,12 @@
         \caption{\label{tab:ml_error_summary} Estimation results of ML\_Error regression.}
     \end{table}
     \begin{itemize}
-         
+
         \item \textbf{}Lambda coefficient is 0.86 with a significant p-value.
         \item \textbf{}Thus, we reject the null hypothesis and conclude that there is dependency of error values of an area with errors in other areas associated with it.
-              
+
     \end{itemize}
-    
+
 \end{frame}
 
 \begin{frame}{Model Compasiron and Conclusion}
@@ -344,19 +344,19 @@
         \input{../bld/python/tables/ml_error_stats.tex}
         \caption{\label{tab:ml_error_stats} Statistics of ML\_Error model.}
     \end{table}
-    
+
 \end{frame}
 
 \begin{frame}{Model Compasiron and Conclusion}
 
     \begin{itemize}
-         
+
         \item \textbf{}We got lower log-likelihood for the Error model.In addition, Schwarz criterion of the error model is also lower than the lag model.
         \item \textbf{}So, we can conclude that this research is missing spatially correlated independent variable.
         \item \textbf{}Further work on this area is necessary to find the correct explanatory variables that are more appropriate for explaining burglary incidence in Greater London Area.
-        
+
     \end{itemize}
-    
+
 \end{frame}
 
 

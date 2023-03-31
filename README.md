@@ -18,8 +18,8 @@
 
 ## Project Description
 
-This project analyzes the burglary crime patterns in Greater London, England's
-highest crime-rate region. As a first step the crime data from the
+This project analyzes the burglary crime patterns in Greater London, England's highest
+crime-rate region. As a first step the crime data from the
 [City of London Police](https://data.police.uk/data/) and the
 [Metropoliton Police Service](https://data.police.uk/data/) along with the
 [English indices of deprivation 2019](https://www.gov.uk/government/statistics/english-indices-of-deprivation-2019)
@@ -36,7 +36,8 @@ research questions as listed below:
   - Can the indices of deprivation explain the spatial variation in the burglary
     incidents?
   - What are the driving factors of the burglary incidents in Greater London?
-  - Which regression model (**Maximum Likelihood Spatial Lag** *vs* **Maximum Likelihood Spatial Error**) is the best fit for the data? 
+  - Which regression model (**Maximum Likelihood Spatial Lag** *vs* **Maximum Likelihood
+    Spatial Error**) is the best fit for the data?
 
 The primary goal of the project is placed on reproducibility of the results by utilizing
 the research-software programming best-practices learned in the course "Effective
@@ -45,7 +46,8 @@ Programming Practices for Economists" taught at the University of Bonn.
 ## Getting started
 
 For a local machine to run this project, it needs to have a Python and LaTeX
-distribution pre-installed. The project was tested primarily on Windows 11 operating system, but should also work on Linux and Mac OS.
+distribution pre-installed. The project was tested primarily on Windows 11 operating
+system, but should also work on Linux and Mac OS.
 
 The project environment includes all the dependencies needed to run the project.
 
@@ -66,11 +68,14 @@ conda activate crime_patterns
 pytask
 ```
 
-> **Note**
-> When pytask is run for the first time, it will download and unzip a decent amount of raw data files onto the local machine. This will take a while, but will only happen once. Subsequent runs of pytask will be much faster. The downloaded raw data files are stored in `src/crime_patterns/data` folder. It is therefore recommended to have at least 5 GB of free space on the local machine.
+> **Note** When pytask is run for the first time, it will download and unzip a decent
+> amount of raw data files onto the local machine. This will take a while, but will only
+> happen once. Subsequent runs of pytask will be much faster. The downloaded raw data
+> files are stored in `src/crime_patterns/data` folder. It is therefore recommended to
+> have at least 5 GB of free space on the local machine.
 
-- To run the tests stored in the `tests` folder, type `pytest` in the
-  root directory of your terminal.
+- To run the tests stored in the `tests` folder, type `pytest` in the root directory of
+  your terminal.
 
 ```console
 pytest --cov=crime_patterns tests/
@@ -86,10 +91,9 @@ through the folders, the workflow is decomposed as follows:
 - `src/crime_patterns/analysis` contains code for all the analysis mentioned above,
   intuitively named in separte files.
 - `src/crime_patterns/final` includes code to generate final tables and figures.
-- `src/crime_patterns/paper` contains the tasks to generate the final
-  project presentation.
-- `paper/` contains the LaTeX files corresponding to the final project
+- `src/crime_patterns/paper` contains the tasks to generate the final project
   presentation.
+- `paper/` contains the LaTeX files corresponding to the final project presentation.
 
 <!--- - `documentation` generates pdf and html files for the documentaion of the project code. --->
 

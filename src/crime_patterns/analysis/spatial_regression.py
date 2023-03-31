@@ -349,7 +349,6 @@ def get_spatial_diagnostics(model):
         Spatial diagnostics.
 
     """
-
     assert type(model) == OLS, "Invalid model type."
 
     lm_error = pd.Series(
@@ -379,6 +378,7 @@ def get_spatial_diagnostics(model):
 
     return pd.concat([lm_error, lm_lag, rlm_error, rlm_lag, morans_i], axis=1)
 
+
 def get_model_stats(model):
     """Function to get the model statistics.
 
@@ -390,32 +390,19 @@ def get_model_stats(model):
     Returns:
     --------
     model_stats_table: pandas.DataFrame
-        Model statistics table. Contains the following metrics: Pseudo R-squared,  Spatial Pseudo R-squared, Log likelihood, Schwarz criterion. 
+        Model statistics table. Contains the following metrics: Pseudo R-squared,  Spatial Pseudo R-squared, Log likelihood, Schwarz criterion.
 
     """
-
     assert type(model) in [ML_Lag, ML_Error], "Invalid model type."
 
     stats_dict = {
-            "Model": [
-                model.title
-            ],
-            "Pseudo R-squared": [
-                model.pr2
-            ],
-            "Spatial Pseudo R-squared": [
-                model.pr2
-            ],
-            "Log likelihood": [
-                model.logll
-            ],
-            "Schwarz criterion": [
-                model.schwarz
-            ],  # Lower the better
-        }
-    stats_table = pd.DataFrame(
-        data=stats_dict
-    ).T
+        "Model": [model.title],
+        "Pseudo R-squared": [model.pr2],
+        "Spatial Pseudo R-squared": [model.pr2],
+        "Log likelihood": [model.logll],
+        "Schwarz criterion": [model.schwarz],  # Lower the better
+    }
+    stats_table = pd.DataFrame(data=stats_dict).T
 
     stats_table.columns = stats_table.loc["Model", :].values
 
