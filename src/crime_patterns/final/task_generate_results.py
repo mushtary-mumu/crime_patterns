@@ -328,9 +328,13 @@ def task_create_latex_tables(depends_on, produces):
 
     ## Save spatial diagnostics
     spatial_regression.get_spatial_diagnostics(model_ols).to_latex(
-        produces["spat_diag_ols_tex"]
+        produces["spat_diag_ols_tex"],
     )
 
     ## Save model stats
-    spatial_regression.get_model_stats(model_ml_lag).to_latex(produces["ml_lag_stats_tex"])
-    spatial_regression.get_model_stats(model_ml_error).to_latex(produces["ml_error_stats_tex"])
+    spatial_regression.get_model_stats(model_ml_lag).to_latex(
+        produces["ml_lag_stats_tex"],
+    )
+    spatial_regression.get_model_stats(model_ml_error).to_latex(
+        produces["ml_error_stats_tex"],
+    )
