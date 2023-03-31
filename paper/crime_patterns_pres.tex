@@ -36,7 +36,8 @@
 \AtBeginDocument{\toggletrue{blx@useprefix}}
 \AtBeginBibliography{\togglefalse{blx@useprefix}}
 \setlength{\bibitemsep}{1.5ex}
-\addbibresource{refs.bib}
+\addbibresource{references.bib}
+\usepackage{biblatex}
 
 \hypersetup{colorlinks=true, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, runcolor=black, urlcolor=black}
 
@@ -60,31 +61,6 @@
     \titlepage
     \note{~}
 \end{frame}
-
-%% Slide with citation
-\begin{frame}[t]
-    \frametitle{Gathering Raw Data}
-    Raw data was gathered from the following sources:
-    \begin{itemize}
-        \item Please cite this template as: \citet{GaudeckerEconProjectTemplates}
-        \item Example data is taken from \url{https://www.stem.org.uk/resources/elibrary/resource/28452/large-datasets-stats4schools}
-    \end{itemize}
-    \note{~}
-\end{frame}
-
-% \begin{frame}[t]
-%     \begin{figure}[H]
-
-%         \centering
-%         \includegraphics[width=0.5\textwidth]{../bld/python/figures/smoking_by_marital_status}
-
-%         \caption{\emph{Python:} Model predictions of the smoking probability over the
-%             lifetime. Each colored line represents a case where marital status is fixed to
-%             one of the values present in the data set.}
-%         \label{fig:python-predictions}
-
-%     \end{figure}
-% \end{frame}
 
 %% Slide with a figure and text in two seperate columns
 \begin{frame}{Point Patterns of Burglary Incidents}
@@ -138,7 +114,7 @@
                 \item A spatial weights matrix is the way geographical space is formally encoded into
                 a numerical form so it is easy for a computer (or a statistical method) to understand.
                 \item We can define a spatial weights matrix, such as contiguity, distance-based,
-                or block. We have used Queen contiguity matrix.
+                or block. The following analysis has used a Queen contiguity matrix.
                 \item \textbf{Queen Contiguity Matrix:} For a pair of local authorities in the dataset to be
                 considered neighbours under this W, they will need to be sharing border or, in other words, “touching” each other to some degree.
 
@@ -176,15 +152,15 @@
     \end{figure}
 \end{frame}
 
-%% Slide with two figures and text
-\begin{frame}{Moran's I}
 
+
+%% Slide with two figures and text
+\begin{frame}{Moran Plot}
     \begin{itemize}
-        \item \textbf{Moran's I:} It is a measure of \textbf{spatial autocorrelation}.
-        \item \textbf{Assumption:} The data is normally distributed.
-        \item \textbf{Null hypothesis:} The data is randomly distributed.
-        \item \textbf{Alternative hypothesis:} The data is not randomly distributed.
+        \item \textbf{} The plot displays a positive relationship between the standardized rate of burglary and its spatial lag.
+     
     \end{itemize}
+    
     %You can see in Figure \ref{fig:images} that I have inserted two images, Figures \ref{fig:nature1} and \ref{fig:nature2}, that I can reference independently. More text, More text, More text, More text, More text,More text ,More text
     \begin{figure}
         \centering
@@ -198,6 +174,32 @@
             \end{subfigure}
         \caption{Moran's I and Global Spatial Autocorrelation}\label{fig:moran}
     \end{figure}
+\end{frame}
+
+\begin{frame}{Moran Plot}
+    \begin{itemize}
+        \item Moran plot is a way of visualizing a spatial dataset to explore the nature and strength of spatial autocorrelation.
+        \item This is associated with the presence of \textbf{positive spatial autocorrelation:} similar values tend to be located close to each other. This means that the \textbf{overall trend} is for high values to be close to other high values, and for low values to be surrounded by other low values.
+    \end{itemize}
+    
+\end{frame}
+
+
+\begin{frame}{Moran's I and Spatial Autocorrelation}
+    \begin{itemize}
+        
+        \item \textbf{Moran's I} is a measure of \textbf{spatial autocorrelation}.
+        \item From the figure \ref{fig:moran_scatter}, we can see that the value of the Moran's I is 0.5, which is a positive value.
+        \item With the small p-value associated with the Moran's I, we can conclude that the map displays 
+        more spatial pattern that we would expect if the values had been randomly allocated to a particular location.
+        \item \textbf{Global Spatial Autocorrelation} relates to the overall geographical pattern present in the data.
+        \item Global autocorrelation analysis shows us that observations do seem positively correlated over space. 
+
+
+    \end{itemize}
+   
+    %You can see in Figure \ref{fig:images} that I have inserted two images, Figures \ref{fig:nature1} and \ref{fig:nature2}, that I can reference independently. More text, More text, More text, More text, More text,More text ,More text
+   
 \end{frame}
 
 %% Slide with two figures and text
@@ -270,6 +272,20 @@
     
 \end{frame}
 
+\begin{frame}{Spatial Regression: ML\_Lag}
+    \begin{equation} 
+        y_i=X_i \beta+\lambda w_i \epsilon_i+u_i
+    \end{equation}
+    \begin{itemize}
+         
+        \item \textbf{Spatial Lag Model} is a global model where the dependent variable among where neighbors influence the dependent variable. 
+        \item \textbf{}For Example, If burglary incidence is higher in the neighborhood of the City Centre of London, its highly likely to have high burglary incidence in the city center of London. Therefore, there is a feedback loop that occurs where affects on our neighbor(s) y affects our y and our neighbor(s) y variable.
+        \item \textbf{Null hypothesis:} Spatial dependencies are not captured by the spatial lag Wy in the endogenous variable Y
+        \item \textbf{Alternative hypothesis:} Spatial dependencies are captured by the spatial lag Wy in the endogenous variable Y
+        
+    \end{itemize}
+\end{frame}
+
 % Slide with table
 \begin{frame}{Spatial Regression: ML\_Lag}
     \small\begin{table}[!h]
@@ -285,69 +301,91 @@
     \end{itemize}
 \end{frame}
 
+\begin{frame}{Spatial Regression: ML\_Error}
+
+    \begin{equation} 
+        y_i=X_i \beta+\lambda w_i \epsilon_i+u_i
+    \end{equation}
+    
+    \begin{itemize}
+         
+        \item \textbf{Spatial Error Model} does not include lagged dependent or independent variables, but instead includes a function of our unexplained error and that of our neighbors.
+        \item \textbf{}Higher than expected residual values suggest a missing explanatory variable that is spatially correlated. In this analysis, Lambda is the error multiplier.
+        \item \textbf{Null hypothesis:} There is no dependency of error values of an area with errors in other areas associated with it
+        \item \textbf{Alternative hypothesis:} There is dependency of error values of an area with errors in other areas associated with it
+        
+    \end{itemize}
+\end{frame}
+
 % Slide with table
 \begin{frame}{Spatial Regression: ML\_Error}
     \small\begin{table}[!h]
         \input{../bld/python/tables/model_spatial_ml_error_summary.tex}
         \caption{\label{tab:ml_error_summary} Estimation results of ML\_Error regression.}
     \end{table}
+    \begin{itemize}
+         
+        \item \textbf{}Lambda coefficient is 0.86 with a significant p-value.
+        \item \textbf{}Thus, we reject the null hypothesis and conclude that there is dependency of error values of an area with errors in other areas associated with it.
+              
+    \end{itemize}
+    
+\end{frame}
+
+\begin{frame}{Model Compasiron and Conclusion}
+
+
+    \small\begin{table}[!h]
+        \input{../bld/python/tables/ml_lag_stats.tex}
+        \caption{\label{tab:ml_lag_stats} Statistics of ML\_Lag model.}
+    \end{table}
+
+    \small\begin{table}[!h]
+        \input{../bld/python/tables/ml_error_stats.tex}
+        \caption{\label{tab:ml_error_stats} Statistics of ML\_Error model.}
+    \end{table}
+
+    \begin{itemize}
+         
+        \item \textbf{}We got lower log-likelihood for the Error model. So, we can conclude that this research is missing spatially correlated independent variable.
+        \item \textbf{}Further work on this area is necessary to find the correct explanatory variables that are more appropriate for explaining burglary incidence in Greater London Area.
+
+    \end{itemize}
+    
+\end{frame}
+
+\begin{frame}{Model Compasiron and Conclusion}
+
+    \begin{itemize}
+         
+        \item \textbf{}We got lower log-likelihood for the Error model.In addition, Schwarz criterion of the error model is also lower than the lag model.
+        \item \textbf{}So, we can conclude that this research is missing spatially correlated independent variable.
+        \item \textbf{}Further work on this area is necessary to find the correct explanatory variables that are more appropriate for explaining burglary incidence in Greater London Area.
+        
+    \end{itemize}
+    
 \end{frame}
 
 
+%% Slide with citation
+\begin{frame}[t]
+    \frametitle{Resources}
+    Raw data was gathered from the following sources:
+    \begin{itemize}
+        \item Crime data is taken from \url{https://data.police.uk/data/}
+        \item Deprivation data is taken from \url{https://www.gov.uk/government/statistics/english-indices-of-deprivation-2019}
+    \end{itemize}
 
-% % Slide with table
-% \begin{frame}{Tables in Beamer}
-%     \small\begin{table}[!h]
-%         \input{../bld/python/tables/model_spatial_ml_error_summary.tex}
-%         \caption{\label{tab:python-summary}\emph{Python:} Estimation results of the
-%             linear Logistic regression.}
-%     \end{table}
-% \end{frame}
+    Methods were selected from the following sources:
+    \begin{itemize}
+        \item Geospatial analysis: \citet{lawhead2019learning}
+        \item Spatial Econometrics: \citet{anselin1988spatial} and \citet{kopczewska2020applied}
+    \end{itemize}
 
-% %% Slide with a figure and text in two seperate columns
-% \begin{frame}{Figure with other content}
-%     \begin{columns}
-%         % Column 1
-%         \begin{column}{0.5\textwidth}
-%                 Here I can explain in detail what the figure represents.
-%         \end{column}
-%         % Column 2
-%         \begin{column}{0.5\textwidth}
-%             \begin{figure}
-%             \centering
-%                 \includegraphics[width=1.0\textwidth]{burglary_ward.png}
-%                 \caption{A figure that is next to a certain explanation.}
-%             \end{figure}
-%         \end{column}
-%     \end{columns}
-% \end{frame}
+    LaTeX template was taken from \citet{GaudeckerEconProjectTemplates} and modified.
 
-% %% Slide with two figures and text
-% \begin{frame}{Subfigures in Beamer}
-%     You can see in Figure \ref{fig:images} that I have inserted two images, Figures \ref{fig:nature1} and \ref{fig:nature2}, that I can reference independently. More text, More text, More text, More text, More text,More text ,More text
-%     \begin{figure}
-%         \centering
-%             \begin{subfigure}[t]{0.4\textwidth}
-%                 \includegraphics[width=\textwidth]{burglary_ward.png}
-%                 \caption{Image of the nature V1.}\label{fig:nature1}
-%             \end{subfigure}
-%             \begin{subfigure}[t]{0.4\textwidth}
-%                 \includegraphics[width=\textwidth]{imd_scores_ward.png}
-%                 \caption{Image of the nature V2.}\label{fig:nature2}
-%             \end{subfigure}
-%         \caption{Two images I want to insert.}\label{fig:images}
-%     \end{figure}
-% \end{frame}
-
-% % Slide with table
-% \begin{frame}{Tables in Beamer}
-%     \small\begin{table}[!h]
-%         \input{../bld/python/tables/model_spatial_ml_error_summary.tex}
-%         \caption{\label{tab:python-summary}\emph{Python:} Estimation results of the
-%             linear Logistic regression.}
-%     \end{table}
-% \end{frame}
-
+    \note{~}
+\end{frame}
 
 \begin{frame}[allowframebreaks]
     \frametitle{References}
