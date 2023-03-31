@@ -318,8 +318,6 @@ def get_reg_summary(model, method):
     x_vars = pd.Series(data=model.name_x, name="Independent Variable")
     betas = pd.Series(data=model.betas.ravel(), name="Coefficient")
 
-    betas = pd.Series(data=model.std_err, name="Std. Error")
-
     if method == "OLS":
         tstat_temp, prob_temp = zip(*model.t_stat)
         stat = pd.Series(data=list(tstat_temp), name="t-Statistic")
