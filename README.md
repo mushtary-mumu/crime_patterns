@@ -18,8 +18,8 @@
 
 ## Project Description
 
-This project analyzes the burglary crime patterns in the city of London, England's
-highest crime-rate city. As a first step the crime data from the
+This project analyzes the burglary crime patterns in Greater London, England's
+highest crime-rate region. As a first step the crime data from the
 [City of London Police](https://data.police.uk/data/) and the
 [Metropoliton Police Service](https://data.police.uk/data/) along with the
 [English indices of deprivation 2019](https://www.gov.uk/government/statistics/english-indices-of-deprivation-2019)
@@ -28,17 +28,15 @@ the burglary crime data and the indices of deprivation in order to answer certai
 research questions as listed below:
 
 - Spatial Point Pattern Analysis
-  - Where are the burglary crime incidents located in the City of London?
+  - Where are the burglary hotspots located within Greater London?
   - Are the burglary incidents clustered in certain areas?
-  - Where are the burglary hotspots located?
 - Spatial Autocorrelation
-  - Q1
-  - Q2
-  - Q3
-- Spatial Regression.
-  - Q1
-  - Q2
-  - Q3
+  - Are the burglary incidents positively correlated over space?
+- Spatial Regression
+  - Can the indices of deprivation explain the spatial variation in the burglary
+    incidents?
+  - What are the driving factors of the burglary incidents in Greater London?
+  - Which regression model (**Maximum Likelihood Spatial Lag** *vs* **Maximum Likelihood Spatial Error**) is the best fit for the data? 
 
 The primary goal of the project is placed on reproducibility of the results by utilizing
 the research-software programming best-practices learned in the course "Effective
