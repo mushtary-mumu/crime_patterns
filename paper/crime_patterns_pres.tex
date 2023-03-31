@@ -245,12 +245,45 @@
 
 
 % Slide with table
-\begin{frame}{Spatial Regression: OLS}
+\begin{frame}{Spatial Regression}
+    
     \small\begin{table}[!h]
         \input{../bld/python/tables/model_spatial_ols_summary.tex}
-        \caption{\label{tab:ols_summary} Estimation results of OLS regression.}
+        \caption{\label{tab:ols_summary} Estimation results of regression.}
     \end{table}
+    \begin{itemize}
+        \item \textbf{Independent variables:} Resource deprivation scores.
+        \item \textbf{Dependent Variable:} Burglary rate in GreaterLondon Area .
+        \item \textbf{Null hypothesis:} No Spatial autocorrelation in the residuals.
+        \item \textbf{Alternative hypothesis:} There is spatial autocorrelation in the residuals. 
+        \item \textbf{Conclusion:} The null hypothesis is rejected. There is spatial autocorrelation in the residuals.
+    \end{itemize}
 \end{frame}
+
+\begin{frame}{Spatial Regression}
+    
+    \begin{itemize}
+    
+        \item \textbf{Result Analysis:} 
+        
+        \begin{itemize}
+            \item \textbf{LaGrange Multiplier Tests} suggests that a spatial error or spatial lag model would improve the fit of our model.
+            \item \textbf{} We have got significant results for both LM error and LM lag. This shows that we should consider the spatial correlation. 
+            \item \textbf{} However, according to the Robust LM and Robust LM(error) values, we should only consider the Spatial Error model as Robust LM is not significant anymore.
+            \item \textbf{} We will continue with the spatial error and spatial lag models even though the error model is more than likely the correct path. 
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% Slide with table
+\begin{frame}{Spatial Regression}
+    \resizebox{\textwidth}{!}{\input{../bld/python/tables/spat_diag_ols_tex.tex}}
+        % \begin{table}[!h]
+        %     \input{../bld/python/tables/spat_diag_ols_tex.tex}
+        %     \caption{\label{tab:python-summary} Spatial Diagnostic Tests.}
+        % \end{table}
+\end{frame}
+
 
 % Slide with table
 \begin{frame}{Spatial Regression: ML\_Lag}
@@ -258,6 +291,13 @@
         \input{../bld/python/tables/model_spatial_ml_lag_summary.tex}
         \caption{\label{tab:ml_lag_summary} Estimation results of ML\_Lag regression.}
     \end{table}
+    \begin{itemize}
+         
+        \item \textbf{W\_burglaryRate2019} is a spatially lagged y multiplier. 
+        \item \textbf{} Coefficient is 0.84 (with a significant p-value)
+        \item \textbf{} Burglary incidence tends to higher in an area when it is higher in the neighborhood with some spillover effects.  
+        
+    \end{itemize}
 \end{frame}
 
 % Slide with table
