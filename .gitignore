@@ -31,7 +31,7 @@ src/crime_patterns/data/
 *.toc
 *.snm
 *.nav
-*.pdf
+# *.pdf
 *.run.xml
 *.synctex.gz
 
